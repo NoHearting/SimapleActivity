@@ -1,0 +1,54 @@
+#LoginInner{
+    background-color:rgb(62,188,125);
+}
+
+#LoginContent{
+    background:transparent;
+}
+
+#label_double_code{
+
+}
+
+#lineEdit_password,#comboBox_id{
+    border:none;
+    background:rgba(255,255,255,0.1);
+    border-radius:5px;
+}
+
+#widgetId,#widgetPwd{
+    border-bottom:1px solid rgb(184,186,188);
+}
+
+/*登录按钮的美化*/
+#pushButton_login_id_and_pwd{
+    background-color:rgb(28,196,252);
+    color:white;
+    border:none;
+    border-radius:5px;
+}
+
+/*将app名字换为白色*/
+#label_head{
+    color:white;
+}
+
+#stackedWidgetLeft,#widgetRight{
+    background:transparent;
+}
+
+
+
+QComboBox::drop-down{
+    image:url(":/Login/C:/Users/ASUS/Pictures/Login/vsp_s.png");
+    subcontrol-position: bottom right;
+    width:15px;
+}
+
+QComboBox::drop-down:on{
+    image:url(":/Login/C:/Users/ASUS/Pictures/Login/vxt.png");
+}
+
+QComboBox::drop-down:off{
+    image:url(":/Login/C:/Users/ASUS/Pictures/Login/vsp_s.png");
+}

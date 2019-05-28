@@ -1,0 +1,17 @@
+
+
+
+/*加入活动按钮的美化*/
+#toolButton_sign_up{
+    color:red;
+    border:none;
+
+}
+#toolButton_sign_up:hover{
+    border-bottom:1px solid red;
+}
+
+#widgetImageContent{
+
+}
+
