@@ -33,7 +33,7 @@ public:
 
     /// @brief 将图片缩放为圆形
     /// @param pixmap 缩放的图片
-    /// @param radius 缩放的尺寸
+    /// @param radius 缩放的尺寸,缩放后圆形的半径
     /// @return QPixmap 一张新的图片
     static QPixmap get_round_image(QPixmap & pixmap,int radius);
 

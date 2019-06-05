@@ -38,6 +38,8 @@ Login::Login(QWidget *parent) :
             ui->label_pwd->setPixmap(QPixmap(":/Login/C:/Users/ASUS/Pictures/Login/lockfill.png"));
         }
     });
+
+    show_dialog_.reset(new ShowMessage(0,""));
 }
 
 Login::~Login()
@@ -47,7 +49,8 @@ Login::~Login()
 
 void Login::initWinRource()
 {
-    this->setWindowFlags(Qt::FramelessWindowHint);   //设置窗口无边框
+    //Qt::WindowStaysOnTopHint  设置显示在最顶层
+    this->setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);   //设置窗口无边框
     this->setAttribute(Qt::WA_TranslucentBackground);  //设置主窗口背景透明
     this->setStyleSheet(ReadQStyleSheet::readQss(":/qss/qss_login.qss"));
 
@@ -114,8 +117,8 @@ void Login::on_pushButton_login_clicked()
     // 服务器验证
     //User user(id,"无心",pwd,"相信但不迷失",true,"c:","123644545545","qqdada@qq.com");
     //emit isOk(user);
-    qDebug()<<"发送消息";
-    this->close();
+//    qDebug()<<"发送消息";
+//    this->close();
 }
 
 void Login::on_pushButton_login_id_and_pwd_clicked()
@@ -123,19 +126,26 @@ void Login::on_pushButton_login_id_and_pwd_clicked()
     QString id = ui->comboBox_id->currentText();
     QString pwd = ui->lineEdit_password->text();
 
-//    QUrl url("http://192.168.1.237:8080/test/user/login");
-//    QByteArray append = QString("uName=%1&uPassword=%2").arg(id).arg(pwd).toUtf8();
-//    QNetworkReply * reply = nam_->post(QNetworkRequest(url),append);
+    QUrl url(g_ip_url+"/user/login");
+    QByteArray append = QString("uName=%1&uPassword=%2").arg(id).arg(pwd).toUtf8();
+    QNetworkReply * reply = nam_->post(QNetworkRequest(url),append);
 
-    // 服务器验证
-    User user(1,"无心","pwd","相信但不迷失",true,"c:","123644545545","qqdada@qq.com");
-    emit isOk(user);
-    qDebug()<<"发送消息";
-    this->close();
+    ReplyTimeout * timeout = new ReplyTimeout(reply,10000);
+    connect(timeout,&ReplyTimeout::timeout,this,[=](){
+        show_dialog_->showDialog("连接超时");
+    });
+
+    ui->pushButton_login_id_and_pwd->setText("登陆中");
+//    // 服务器验证
+//    User user(1,"无心","pwd","相信但不迷失",true,"c:","123644545545","qqdada@qq.com");
+//    emit isOk(user);
+//    qDebug()<<"发送消息";
+//    this->close();
 }
 
 void Login::dealGetData(QNetworkReply *reply)
 {
+    over_timer_ = false;
     // 状态码
     int statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     qDebug()<<statusCodeV;
@@ -153,12 +163,12 @@ void Login::dealGetData(QNetworkReply *reply)
             qDebug()<<"数据解析错误";
             return;
         }
-//        QJsonArray json_array;
-//        qDebug()<<json_document.object().value("loginMessage").toString();
         bool is_login = json_document.object().value("loginSuccess").toBool();
+        show_dialog_->showDialog("登录成功！！！");
         if(is_login)
         {
             QJsonObject obj = json_document.object().value("userData").toObject();
+            QString pic_url = json_document.object().value("userImage").toString();
 
             // 发送信号到主程序
             emit isOk(User(obj.value("uId").toInt(),
@@ -166,7 +176,7 @@ void Login::dealGetData(QNetworkReply *reply)
                       obj.value("uPassword").toString(),
                       obj.value("uSignature").toString(),
                       obj.value("uSex").toBool(),
-                      obj.value("uAvatarUrl").toString(),
+                      pic_url,
                       obj.value("uPhone").toString(),
                       obj.value("uEmail").toString()
                       ));
@@ -175,7 +185,7 @@ void Login::dealGetData(QNetworkReply *reply)
         }
         else
         {
-            QMessageBox::warning(0,"错误",json_document.object().value("loginMessage").toString(),QMessageBox::Ok);
+            show_dialog_->showDialog(json_document.object().value("loginMessage").toString());
         }
 
     }

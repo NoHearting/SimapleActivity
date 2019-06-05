@@ -23,6 +23,7 @@
 #include "signupactivity.h"
 #include "getimage.h"
 #include "readqstylesheet.h"
+#include "writecomment.h"
 
 using namespace std;
 
@@ -46,7 +47,10 @@ public:
     /// @param time 活动创建时间
     /// @param abstract 活动摘要
     /// @param join_num 活动参与人数
-    ContentItem(QWidget *parent,const QVector<QString> &urls,QString name,QString time,QString abstract,int join_num,int id);
+    /// @param id 活动id
+    /// @param p_id 该动态的id
+    /// @param user 操作此项的用户
+    ContentItem(QWidget *parent,const QVector<QString> &urls,QString name,QString time,QString abstract,int join_num,int id,int p_id,const User & user,int praise_num);
 
     ContentItem(QWidget *parent,int num);
 
@@ -63,8 +67,16 @@ public:
     inline void set_time(QString time){time_ = time;}
     inline void set_abstract(QString abstract){abstract_ = abstract;}
     inline void set_join_num(int join_num){join_num_ = join_num;}
+
+
 private slots:
+    /// @brief 报名
     void on_toolButton_sign_up_clicked();
+
+    /// @brief 评论
+    void on_pushButton_write_comment_clicked();
+
+    void on_pushButton_praise_clicked();
 
 private:
     Ui::ContentItem *ui;
@@ -75,6 +87,8 @@ private:
     QString abstract_;  ///< 摘要
     int join_num_;     ///< 参与人数
     int id_;           ///< 活动id
+    User user_;         ///< 用户
+    int praise_num_;    ///< 此活动获得的赞的数目
 
     int image_num_;
 
@@ -84,8 +98,14 @@ private:
 
     shared_ptr<GetImage>get_image_;     ///< 获取图片信息
 
+    shared_ptr<WriteComment>write_comment_;   ///<  评论此活动界面
 
-    void set_show_image();
+    int p_id_;       ///< 动态id  此活动被显示为一条动态
+
+
+    bool flag_ = false;      ///< 是否已经点赞
+
+    void setShowImage();
 
 
 protected:

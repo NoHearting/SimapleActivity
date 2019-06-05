@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QWidget" name="widget" native="true">
+    <widget class="QWidget" name="widgetInner" native="true">
      <property name="styleSheet">
       <string notr="true">background-color:rgb(248,246,242);</string>
      </property>
@@ -114,6 +114,9 @@
          </item>
          <item row="0" column="2">
           <widget class="QPushButton" name="toolButton_sign_up">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
            <property name="text">
             <string>╋立即参加</string>
            </property>
@@ -243,37 +246,47 @@
              </spacer>
             </item>
             <item>
-             <widget class="QLabel" name="label_5">
+             <widget class="QPushButton" name="pushButton_praise">
               <property name="minimumSize">
                <size>
-                <width>50</width>
-                <height>0</height>
+                <width>75</width>
+                <height>20</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>50</width>
-                <height>16777215</height>
+                <width>75</width>
+                <height>20</height>
                </size>
               </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="text">
-               <string>点赞</string>
+               <string>(100)</string>
+              </property>
+              <property name="icon">
+               <iconset resource="imagelogin.qrc">
+                <normaloff>:/Main/C:/Users/ASUS/Pictures/Camera Roll/wgz.png</normaloff>:/Main/C:/Users/ASUS/Pictures/Camera Roll/wgz.png</iconset>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_6">
+             <widget class="QPushButton" name="pushButton_write_comment">
               <property name="minimumSize">
                <size>
-                <width>50</width>
-                <height>0</height>
+                <width>75</width>
+                <height>20</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>50</width>
-                <height>16777215</height>
+                <width>75</width>
+                <height>20</height>
                </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
               </property>
               <property name="text">
                <string>评论</string>
@@ -291,6 +304,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="imagelogin.qrc"/>
+ </resources>
  <connections/>
 </ui>

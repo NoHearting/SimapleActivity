@@ -42,13 +42,16 @@ QPixmap GetImage::get_image(QUrl urls)
     return pix;
 }
 
-QPixmap GetImage::get_round_image(QPixmap &pixmap, int radius)
+QPixmap GetImage::get_round_image(QPixmap & pixmap, int radius)
 {
     if(pixmap.isNull())
     {
         return QPixmap();
+
     }
+
     QSize size(2*radius,2*radius);
+    pixmap = pixmap.scaled(size);
     QBitmap mask(size);
     QPainter painter(&mask);
     painter.setRenderHint(QPainter::Antialiasing);

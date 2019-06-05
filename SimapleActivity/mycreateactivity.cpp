@@ -39,10 +39,13 @@ MyCreateActivity::MyCreateActivity(QWidget *parent, QString activity_id, QString
     ui->label_name->setText(activity_name_);
     ui->label_abstract->setText(activity_abstract_);
     connect(nam_.get(),&QNetworkAccessManager::finished,this,&MyCreateActivity::dealGetHttpData);
-    QString url = QString("http://192.168.1.237:8080/test/manager/getAllChildActivity?aId=%1").arg(activity_id_);
-    Cout<<url;
+    QString url = QString("http://192.168.1.237:8080/test/activity/getAllChildActivity?aId=%1").arg(activity_id_);
     nam_->get(QNetworkRequest(QUrl(url)));
-    Cout<<"MyCreateActivity     "<<"get";
+}
+
+void MyCreateActivity::setUpdateHidden(bool flag)
+{
+    ui->pushButton->setHidden(flag);
 }
 
 MyCreateActivity::~MyCreateActivity()
@@ -52,30 +55,32 @@ MyCreateActivity::~MyCreateActivity()
 
 void MyCreateActivity::dealGetHttpData(QNetworkReply *reply)
 {
+
     if(reply->error()==QNetworkReply::NoError)
     {
-        Cout<<"MyCreateActivity::dealGetHttpData";
         QByteArray bytes = reply->readAll();
         QJsonParseError json_error;
         QJsonDocument json_document = QJsonDocument::fromJson(bytes,&json_error);
         if(json_error.error!=QJsonParseError::NoError)
         {
+
             Cout<<"数据解析错误";
             return;
         }
         QJsonArray json_array;
 
         //  .......
-        if(json_document.object().contains("childActivityMessagae"))
+        if(json_document.object().contains("childActivityData"))
         {
-            json_array = json_document.object().value("childActivityMessagae").toArray();
+            json_array = json_document.object().value("childActivityData").toArray();
             for(int i = 0;i<json_array.size();++i)
             {
+                // 显示子活动
                 QJsonObject obj = json_array[i].toObject();
                 QListWidgetItem * item = new QListWidgetItem();
                 ChildActivityItem *c_item = new ChildActivityItem(ui->listWidget_child,
                                                                   obj.value("caName").toString(),
-                                                                  QString("数据库未添加摘要字段"));
+                                                                  obj.value("caDescription").toString());
                 c_item->setStyleSheet("background-color:rgb(192,250,214);");
                 item->setSizeHint(QSize(0,100));
                 ui->listWidget_child->addItem(item);

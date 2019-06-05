@@ -11,41 +11,33 @@ ContentItem::ContentItem(QWidget *parent) :
 
 
 // 和服务器交互主要用这个构造函数
-ContentItem::ContentItem(QWidget *parent,const QVector<QString> &urls, QString name, QString time, QString abstract, int join_num,int id)
-    :QWidget(parent),
-     ui(new Ui::ContentItem),urls_(urls),name_(name),time_(time),abstract_(abstract),join_num_(join_num),id_(id)
+ContentItem::ContentItem(QWidget *parent,const QVector<QString> &urls, QString name, QString time, QString abstract, int join_num,int id,int p_id,const User & user,int praise_num)
+    :QWidget(parent),user_(user),
+     ui(new Ui::ContentItem),urls_(urls),name_(name),time_(time),abstract_(abstract),join_num_(join_num),id_(id),p_id_(p_id),praise_num_(praise_num)
 {
     ui->setupUi(this);
-
     // 初始化参加活动界面
     this->setStyleSheet(ReadQStyleSheet::readQss(":/qss/qss_contentitem.qss"));
-//    sign_activity_.reset(new SignUpActivity(0,id_));
-//    sign_activity_->setHidden(true);
-//    ui->widgetImageContent->setStyleSheet("border:1px solid red");
-//    ui->toolButton_sign_up->setStyleSheet("color:red;");
     get_image_.reset(new GetImage());
     image_num_ = urls.size();
     qDebug()<<urls.size();
-    set_show_image();
+    setShowImage();
     QString default_image = ":/Login/C:/Users/ASUS/Pictures/Login/code.png";
+
+    this->setStyleSheet(ReadQStyleSheet::readQss(":/qss/qss_contentitem.qss"));
 
     ui->label_name->setText(name_);
     ui->label_abstract->setText(abstract_);
     ui->label_create_time->setText(time_);
     ui->label_join_num->setText(QString("已参加%1人").arg(join_num_));
+    ui->pushButton_praise->setText(QString("(%1)").arg(praise_num_));
+
+
 
     if(image_num_ == 1)
     {
-        //QPixmap * pixmap = new QPixmap(urls_[0]);
-//        shared_ptr<QPixmap> pixmap(new QPixmap());
-//        pixmap->loadFromData(get_image_->get_image(urls_[0]));
+
         QPixmap pixmap = get_image_->get_image(urls[0]);
-        //pixmap->load(default_image);
-//        if(pixmap.isNull())
-//        {
-//            qDebug()<<"NULL";
-//            pixmap.reset(new QPixmap(default_image));
-//        }
         QLabel * label = new QLabel(ui->widgetImageContent);
         int max = pixmap.height()>pixmap.width()?pixmap.height():pixmap.width();
         double x = max*1.0/300;
@@ -57,24 +49,8 @@ ContentItem::ContentItem(QWidget *parent,const QVector<QString> &urls, QString n
     else if(image_num_ == 2)
     {
 
-
-
-//        shared_ptr<QPixmap>pixmap(new QPixmap());
-//        shared_ptr<QPixmap>pixmap2(new QPixmap());
-//        pixmap->loadFromData(get_image_->get_image(urls[0]));
-//        pixmap2->loadFromData(get_image_->get_image(urls[1]));
-//        QPixmap * pixmap = new QPixmap(default_image);
-//        QPixmap * pixmap2 = new QPixmap(default_image);
         QPixmap pixmap = get_image_->get_image(urls[0]);
         QPixmap pixmap2 = get_image_->get_image(urls[1]);
-//        if(pixmap->isNull())
-//        {
-//            qDebug()<<"NULL";
-//            pixmap.reset(new QPixmap(default_image));
-//            pixmap2.reset(new QPixmap(default_image));
-
-
-//        }
         QLabel * label1 = new QLabel(ui->widgetImageContent);
         QLabel * label2 = new QLabel(ui->widgetImageContent);
         label1->setFixedSize(150,150);
@@ -91,20 +67,11 @@ ContentItem::ContentItem(QWidget *parent,const QVector<QString> &urls, QString n
         int i = 0;
         int j = 0;
         int n = 0;
-//        shared_ptr<QPixmap> pix(new QPixmap());
         QPixmap pix;
-
         while(n<image_num_&&n<9)
         {
             // 一次最多显示九张
-            //QPixmap * pix = new QPixmap(urls_[n]);
             pix = get_image_->get_image(urls[i]);
-            //pix->load(default_image);
-//            if(pix->isNull())
-//            {
-//                qDebug()<<"NULL";
-//                pix->loadFromData(default_image.toStdString().c_str());
-//            }
             QLabel * label = new QLabel(ui->widgetImageContent);
             label->setFixedSize(100,100);
             label->setPixmap(pix.scaled(QSize(100,100)));
@@ -125,17 +92,16 @@ ContentItem::ContentItem(QWidget *parent,const QVector<QString> &urls, QString n
 
 // 测试
 ContentItem::ContentItem(QWidget *parent, int num):
-    QWidget(parent),
+    QWidget(parent),praise_num_(10),name_("就是这个名字"),
     ui(new Ui::ContentItem),
     image_num_(num)
 {
     ui->setupUi(this);
-    set_show_image();
+    setShowImage();
 
-//    sign_activity_.reset(new SignUpActivity(0,1));
-//    sign_activity_->setHidden(true);
-//    this->setStyleSheet(ReadQStyleSheet::readQss(":/qss/qss_contentitem.qss"));
-//    qDebug()<<ReadQStyleSheet::readQss(":/qss/qss_contentitem.qss");
+    ui->pushButton_praise->setText(QString("(%1)").arg(praise_num_));
+    this->setStyleSheet(ReadQStyleSheet::readQss(":/qss/qss_contentitem.qss"));
+
     if(image_num_ == 1)
     {
         QPixmap * pixmap = new QPixmap("C:/Users/ASUS/Pictures/Image/xyz.jpg");
@@ -206,9 +172,13 @@ ContentItem::~ContentItem()
 }
 
 // 待修改
-void ContentItem::set_show_image()
+void ContentItem::setShowImage()
 {
-    if(image_num_==1)
+    if(image_num_==0)
+    {
+        ui->widgetImageContent->setFixedHeight(1);
+    }
+    else if(image_num_==1)
     {
         ui->widgetImageContent->setFixedHeight(315);
     }
@@ -226,26 +196,42 @@ void ContentItem::set_show_image()
     }
 }
 
-//void ContentItem::paintEvent(QPaintEvent * e)
-//{
-//    QStyleOption opt;
-//    opt.initFrom(this);
-//    QPainter p(this);
-//    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-//    QWidget::paintEvent(e);
-//}
 
 int ContentItem::get_height()
 {
-    return ui->widgetHead->height()+ui->widgetImageContent->height()+ui->widgetFoot->height();
+    return ui->widgetHead->height()+ui->widgetImageContent->height()+ui->widgetFoot->height()+40;
 }
 
 void ContentItem::on_toolButton_sign_up_clicked()
 {
     if(!sign_activity_)    //点击的时候再申请内存
     {
-        sign_activity_.reset(new SignUpActivity(0,id_,name_));
-        Cout<<"进入";
+        sign_activity_.reset(new SignUpActivity(0,id_,name_,user_.get_id()));
     }
     sign_activity_->show();
+}
+
+
+void ContentItem::on_pushButton_write_comment_clicked()
+{
+    if(!write_comment_)
+    {
+        write_comment_.reset(new WriteComment(name_,user_,p_id_));
+    }
+    write_comment_->show();
+}
+
+void ContentItem::on_pushButton_praise_clicked()
+{
+    flag_ = !flag_;
+    if(flag_)
+    {
+        ui->pushButton_praise->setText(QString("(%1)").arg(++praise_num_));
+        ui->pushButton_praise->setIcon(QPixmap(":/Main/C:/Users/ASUS/Pictures/Camera Roll/wgw.png"));
+    }
+    else
+    {
+        ui->pushButton_praise->setText(QString("(%1)").arg(--praise_num_));
+        ui->pushButton_praise->setIcon(QPixmap(":/Main/C:/Users/ASUS/Pictures/Camera Roll/wgz.png"));
+    }
 }

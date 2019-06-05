@@ -113,6 +113,31 @@ QToolButton{
     background-color:rgb(248,246,242);
 }
 
+/*美化新建动态按钮、刷新按钮*/
+#pushButton_write_dynamic,#pushButton_dynamic_update{
+    background-color:white;
+    border-radius:8px;
+    border:1px solid rgb(63,204,84);
+    padding:2px;
+
+}
+#pushButton_write_dynamic:hover,#pushButton_dynamic_update:hover{
+    background-color:rgb(248,246,242);
+
+}
+
+/*美化我创建的界面的刷新按钮*/
+#pushButton_my_create_update{
+    background-color:white;
+    border-radius:8px;
+    border:1px solid rgb(63,204,84);
+    padding:2px;
+}
+
+#pushButton_my_create_update:hover{
+    background-color:rgb(248,246,242);
+}
+
 /*创建主活动的输入框的美化*/
 #lineEdit_name,#textEdit_abstract,#lineEdit_address,#dateEdit_date,#textEdit_decription,#lineEdit_notice{
     border:none;
@@ -178,6 +203,11 @@ QDateEdit::down-arrow{
 
 }
 
+/*显示动态的listwidget渲染*/
+#listWidget_user_dynamic{
+    border:none;
+    background:transparent;
+}
 QScrollBar:vertical{
     background:transparent;
     width:9px;

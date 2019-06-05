@@ -33,14 +33,14 @@ MainActivity::MainActivity(int a_id, int u_id, QString name, QDate create_time, 
 
 }
 
-void MainActivity::reset(int a_id,QString name, QDate dead_time, QString abstract, QString description, QString address,QString notice)
+void MainActivity::reset(int u_id,QString name, QDate dead_time, QString abstract, QString description, QString address,QString notice)
 {
     name_ = name;
     dead_time_ = dead_time;
     abstract_ = abstract;
     description_ =description;
     address_ = address;
-    a_id_ = a_id;
+    u_id_ = u_id;
     notice_ = notice;
 }
 

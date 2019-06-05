@@ -37,7 +37,14 @@ SOURCES += main.cpp\
     mylineedit.cpp \
     transformtojson.cpp \
     mywidgetregister.cpp \
-    userdefinetypeshow.cpp
+    userdefinetypeshow.cpp \
+    userdynamic.cpp \
+    createdynamic.cpp \
+    writecomment.cpp \
+    commentitem.cpp \
+    showmessage.cpp \
+    childactivity.cpp \
+    replytimeout.cpp
 
 HEADERS  += mainwidget.h \
     login.h \
@@ -63,7 +70,14 @@ HEADERS  += mainwidget.h \
     readqstylesheet.h \
     transformtojson.h \
     mywidgetregister.h \
-    userdefinetypeshow.h
+    userdefinetypeshow.h \
+    userdynamic.h \
+    createdynamic.h \
+    writecomment.h \
+    commentitem.h \
+    showmessage.h \
+    childactivity.h \
+    replytimeout.h
 
 FORMS    += mainwidget.ui \
     login.ui \
@@ -76,7 +90,13 @@ FORMS    += mainwidget.ui \
     signupactivity.ui \
     signupitem.ui \
     mycreateactivity.ui \
-    userdefinetypeshow.ui
+    userdefinetypeshow.ui \
+    userdynamic.ui \
+    createdynamic.ui \
+    writecomment.ui \
+    commentitem.ui \
+    showmessage.ui \
+    labelpraise.ui
 
 CONFIG += C++11
 

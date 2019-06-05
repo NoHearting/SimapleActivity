@@ -48,9 +48,9 @@ public:
     /// @brief 显示"我创建的活动"的内容
     ///
     /// 从服务器获取数据并显示，获取一个用户的内容
-    /// @param name 用户的用户名
+    /// @param u_id 用户的id
     /// @param status 状态码
-    void showContent(QString name,int status);
+    void showContent(int u_id,int status);
 
 
     /// @brief 从服务器获取数据并显示到界面
@@ -60,6 +60,8 @@ protected:
     void wheelEvent(QWheelEvent *);
 private:
     shared_ptr<QNetworkAccessManager>nam_;
+
+    int status_ = 0;   ///< 显示状态   0：显示创建的 1：显示管理的 2：显示参加的
 };
 
 #endif // MYLISTWIDGET_H

@@ -15,10 +15,13 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QMessageBox>
+#include <QTimer>
 
 #include "register.h"
 #include "readqstylesheet.h"
 #include "user.h"
+#include "showmessage.h"
+#include "replytimeout.h"
 
 
 using namespace std;
@@ -40,10 +43,15 @@ private:
     shared_ptr<Register> register_;
 
     shared_ptr<QNetworkAccessManager> nam_;
+    shared_ptr<ShowMessage>show_dialog_;        ///< 显示提示信息
 
 
     /// @brief 初始化窗口设置
     void initWinRource();
+
+    bool over_timer_ = false;         ///< 判断登录请求是否超时
+
+    QTimer timer_;       ///< 用于检查请求是否超时
 
 
 

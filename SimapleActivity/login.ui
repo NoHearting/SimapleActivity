@@ -398,7 +398,7 @@
            </size>
           </property>
           <property name="text">
-           <string>123321</string>
+           <string>123456</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -718,6 +718,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>MyWidgetRegister</class>
+   <extends>QWidget</extends>
+   <header location="global">mywidgetregister.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>MyComboBox</class>
    <extends>QComboBox</extends>
    <header>mycombobox.h</header>
@@ -726,12 +732,6 @@
    <class>MyLineEdit</class>
    <extends>QLineEdit</extends>
    <header>mylineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>MyWidgetRegister</class>
-   <extends>QWidget</extends>
-   <header location="global">mywidgetregister.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

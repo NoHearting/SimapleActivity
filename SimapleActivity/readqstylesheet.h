@@ -11,8 +11,11 @@
 
 #include <QString>
 #include <QFile>
+#include <QDebug>
+#include <QString>
 
 #define  Cout qDebug()<<"[ "<<__FILE__<<":"<<__LINE__<<" ]"
+const QString g_ip_url = "http://192.168.1.237:8080/test";
 
 class ReadQStyleSheet
 {

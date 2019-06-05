@@ -18,14 +18,8 @@ MainWidget::MainWidget(QWidget *parent) :
     login_->show();
     connect(login_.get(),&Login::isOk,this,[=](User user){
         initListMainContent();   //初始化主要内容界面
-
         user_ = user;
 
-
-        //string str = user_.get_headpath().toStdString();
-        //std.substr
-
-//        user_head_pic_.loadFromData(get_image_->get_image(QUrl(user_.get_headpath())));
         user_head_pic_ = get_image_->get_image(QUrl(user_.get_headpath()));
 
         QPixmap t = user_head_pic_.scaled(40,40);
@@ -43,6 +37,7 @@ MainWidget::MainWidget(QWidget *parent) :
 
 
 
+        // 用户小菜单的初始化显示
         choose_.reset(new UserInfoChoose(ui->widgetInner,user_head_pic_,user_.get_nickname(),"10","5"));
         choose_->setHidden(true);
         connect(choose_.get(),&UserInfoChoose::userSet,this,[=](int flag){
@@ -96,7 +91,14 @@ MainWidget::MainWidget(QWidget *parent) :
     nam_.reset(new QNetworkAccessManager());
     connect(nam_.get(),&QNetworkAccessManager::finished,this,&MainWidget::dealGetHttpData);
 
+
+
     get_image_.reset(new GetImage());
+
+    show_dialog_.reset(new ShowMessage(0,""));
+    connect(show_dialog_.get(),&ShowMessage::closeDialog,this,[=](){
+        show_dialog_->setHidden(true);
+    });
 
     initWinResource();
     initListChoose();
@@ -171,24 +173,28 @@ void MainWidget::initWinResource()
 
 
 
-
-
-    //base_->move(0,50);
-    //base_->setStyleSheet("background-color:red;");
-
-    // 初始化用户右上角的选择按钮
-    //qDebug()<<user_.get_nickname();
-
+    ui->listWidget_user_dynamic->sortItems(Qt::DescendingOrder);
 
     ui->listWidgetChoose->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);   // 关闭水平滚动条
     ui->listWidgetMainContent->setVerticalScrollMode(QListWidget::ScrollPerPixel);   //设置垂直滚动条以像素滚动
 //    ui->listWidgetMainContent->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);  //关闭活动界面的水平滚动条
     ui->listWidgetMainContent->verticalScrollBar()->setSingleStep(1);        // 每次滚动10px
-    //ui->widgetMainPageNav->setStyleSheet("background-color:rgb(233,233,233);border-bottom:1px solid black;");
 
     QStringList slist{QString("姓名"),QString("电话"),QString("身份证号码"),QString("邮箱"),QString("性别"),QString("QQ"),QString("微信")};
     ui->listWidget_base_type->addItems(slist);
     ui->listWidget_base_type->setSelectionMode(QAbstractItemView::MultiSelection);
+
+    ui->comboBox_choose_about_me->addItem("我创建的");
+    ui->comboBox_choose_about_me->addItem("我管理的");
+    ui->comboBox_choose_about_me->addItem("我参与的");
+
+    void(QComboBox::*currentIndexChangedInt)(int) = &QComboBox::currentIndexChanged;
+    connect(ui->comboBox_choose_about_me,currentIndexChangedInt,this,[=](int index){
+       Cout<<index;
+       ui->listWidget_my_create->clear();
+       int pos = ui->comboBox_choose_about_me->currentIndex();
+       ui->listWidget_my_create->showContent(user_.get_id(),pos);
+    });
 }
 
 void MainWidget::initListChoose()
@@ -199,11 +205,11 @@ void MainWidget::initListChoose()
     item->setSizeHint(QSize(200,30));
     ui->listWidgetChoose->setItemWidget(item,new WidgetItem(ui->listWidgetChoose,":/Login/C:/Users/ASUS/Pictures/Image/yyy.jpg","主页"));
 
-    //我创建的
+    //与我相关的活动
     QListWidgetItem * item2 = new QListWidgetItem();
     ui->listWidgetChoose->addItem(item2);
     item2->setSizeHint(QSize(200,30));
-    ui->listWidgetChoose->setItemWidget(item2,new WidgetItem(ui->listWidgetChoose,":/Login/C:/Users/ASUS/Pictures/Image/yyy.jpg","我创建的"));
+    ui->listWidgetChoose->setItemWidget(item2,new WidgetItem(ui->listWidgetChoose,":/Login/C:/Users/ASUS/Pictures/Image/yyy.jpg","与我相关的活动"));
 
     // 排行榜
     QListWidgetItem * item3 = new QListWidgetItem();
@@ -230,33 +236,77 @@ void MainWidget::initListChoose()
 void MainWidget::initListMainContent()
 {
 
-    QUrl url("http://192.168.1.237:8080/test/activity/getAllActivity");
+    CURRENT_TYPE = AUTO_MAIN_ACT;
+    QUrl url(g_ip_url+"/activity/getAllActivity");
 
-    //QNetworkReply * reply = nam_->get(QNetworkRequest(url));
+    QNetworkReply * reply = nam_->get(QNetworkRequest(url));
+
+
+//    QListWidgetItem * item = new QListWidgetItem();
+//    ContentItem * c_item = new ContentItem(ui->listWidgetMainContent,2);
+//    c_item->setStyleSheet("background-color:rgb(248,246,242);");
+//    c_item->setStyleSheet(ReadQStyleSheet::readQss(":/qss/qss_contentitem.qss"));
+//    ui->listWidgetMainContent->addItem(item);
+//    ui->listWidgetMainContent->setItemWidget(item,c_item);
+//    item->setSizeHint(QSize(ui->listWidgetMainContent->width(),c_item->get_height()));
+
+//    QListWidgetItem * item2 = new QListWidgetItem();
+//    ContentItem * c_item2 = new ContentItem(ui->listWidgetMainContent,1);
+//    c_item2->setStyleSheet(ReadQStyleSheet::readQss(":/qss/qss_contentitem.qss"));
+//    ui->listWidgetMainContent->addItem(item2);
+//    ui->listWidgetMainContent->setItemWidget(item2,c_item2);
+//    item2->setSizeHint(QSize(ui->listWidgetMainContent->width(),c_item2->get_height()));
+
+//    QListWidgetItem * item3 = new QListWidgetItem();
+//    ContentItem * c_item3 = new ContentItem(ui->listWidgetMainContent,7);
+//    c_item3->setStyleSheet(ReadQStyleSheet::readQss(":/qss/qss_contentitem.qss"));
+//    ui->listWidgetMainContent->addItem(item3);
+//    ui->listWidgetMainContent->setItemWidget(item3,c_item3);
+//    item3->setSizeHint(QSize(ui->listWidgetMainContent->width(),c_item3->get_height()));
+}
+
+
+//初始化“动态”界面的数据  即显示所有用户创建的动态
+void MainWidget::initListDynamic()
+{
+    CURRENT_TYPE = INIT_DYNAMIC;
+    QUrl url(g_ip_url+QString("/manager/getAllTrends?flag=0"));
+    nam_->get(QNetworkRequest(url));
+    Cout<<"发送请求";
 
 
 
-    QListWidgetItem * item = new QListWidgetItem();
-    ContentItem * c_item = new ContentItem(ui->listWidgetMainContent,2);
-    c_item->setStyleSheet("background-color:rgb(248,246,242);");
-    c_item->setStyleSheet(ReadQStyleSheet::readQss(":/qss/qss_contentitem.qss"));
-    ui->listWidgetMainContent->addItem(item);
-    ui->listWidgetMainContent->setItemWidget(item,c_item);
-    item->setSizeHint(QSize(ui->listWidgetMainContent->width(),c_item->get_height()));
+//    QListWidgetItem * item = new QListWidgetItem(ui->listWidget_user_dynamic);
+//    UserDynamic * u_item = new UserDynamic(ui->listWidget_user_dynamic,user_,user_,"不知道",2);
+//    ui->listWidget_user_dynamic->addItem(item);
+//    ui->listWidget_user_dynamic->setItemWidget(item,u_item);
+//    item->setSizeHint(QSize(0,u_item->getHeight()));
 
-    QListWidgetItem * item2 = new QListWidgetItem();
-    ContentItem * c_item2 = new ContentItem(ui->listWidgetMainContent,1);
-    c_item2->setStyleSheet(ReadQStyleSheet::readQss(":/qss/qss_contentitem.qss"));
-    ui->listWidgetMainContent->addItem(item2);
-    ui->listWidgetMainContent->setItemWidget(item2,c_item2);
-    item2->setSizeHint(QSize(ui->listWidgetMainContent->width(),c_item2->get_height()));
+//    QListWidgetItem * item2 = new QListWidgetItem(ui->listWidget_user_dynamic);
+//    UserDynamic * u_item2 = new UserDynamic(ui->listWidget_user_dynamic,user_,user_,"不清楚",0);
+//    ui->listWidget_user_dynamic->addItem(item2);
+//    ui->listWidget_user_dynamic->setItemWidget(item2,u_item2);
+//    item2->setSizeHint(QSize(0,u_item2->getHeight()));
 
-    QListWidgetItem * item3 = new QListWidgetItem();
-    ContentItem * c_item3 = new ContentItem(ui->listWidgetMainContent,7);
-    c_item3->setStyleSheet(ReadQStyleSheet::readQss(":/qss/qss_contentitem.qss"));
-    ui->listWidgetMainContent->addItem(item3);
-    ui->listWidgetMainContent->setItemWidget(item3,c_item3);
-    item3->setSizeHint(QSize(ui->listWidgetMainContent->width(),c_item3->get_height()));
+//    QListWidgetItem * item3 = new QListWidgetItem(ui->listWidget_user_dynamic);
+//    UserDynamic * u_item3 = new UserDynamic(ui->listWidget_user_dynamic,user_,user_,"确实不知道该干什么",1);
+//    ui->listWidget_user_dynamic->addItem(item3);
+//    ui->listWidget_user_dynamic->setItemWidget(item3,u_item3);
+//    item3->setSizeHint(QSize(0,u_item3->getHeight()));
+
+//    QListWidgetItem * item4 = new QListWidgetItem(ui->listWidget_user_dynamic);
+//    UserDynamic * u_item4 = new UserDynamic(ui->listWidget_user_dynamic,user_,user_,"今天星期五",9);
+//    ui->listWidget_user_dynamic->addItem(item4);
+//    ui->listWidget_user_dynamic->setItemWidget(item4,u_item4);
+//    item4->setSizeHint(QSize(0,u_item4->getHeight()));
+
+//    QListWidgetItem * item5 = new QListWidgetItem(ui->listWidget_user_dynamic);
+//    UserDynamic * u_item5 = new UserDynamic(ui->listWidget_user_dynamic,user_,user_,"马上要放假了",5);
+//    ui->listWidget_user_dynamic->addItem(item5);
+//    ui->listWidget_user_dynamic->setItemWidget(item5,u_item5);
+//    item5->setSizeHint(QSize(0,u_item5->getHeight()));
+
+
 }
 
 void MainWidget::setMainContent(QNetworkReply *reply)
@@ -265,46 +315,46 @@ void MainWidget::setMainContent(QNetworkReply *reply)
     {
         QByteArray bytes = reply->readAll();
         QString string = QString::fromUtf8(bytes);
-        qDebug()<<string;
 
 
         QJsonParseError json_error;
         QJsonDocument json_document = QJsonDocument::fromJson(bytes,&json_error);
         if(json_error.error!=QJsonParseError::NoError)
         {
-            qDebug()<<"数据解析错误";
+            Cout<<"数据解析错误";
             return;
         }
         QJsonArray json_array;
         QVector<QString> images;
         if(json_document.object().contains("activityData"))
         {
-            qDebug()<<"包含此元素";
             json_array = json_document.object().value("activityData").toArray();
 
             for(int i = 0;i<json_array.size();i++)
             {
                 QJsonObject obj = json_array.at(i).toObject();
-
-                images.push_back(obj.value("aPicturePath").toString()); // 图片不止一张
+                QJsonArray image_arr = obj.value("images").toArray();  // 图片数组
+                for(int i = 0;i<image_arr.size();++i)
+                {
+                    images.push_back(image_arr[i].toString());
+                }
                 QListWidgetItem * item = new QListWidgetItem();
-                    ContentItem * c_item = new ContentItem(ui->listWidgetMainContent,
+                ContentItem * c_item = new ContentItem(ui->listWidgetMainContent,
                                                            images,
                                                            obj.value("aName").toString(),
                                                            obj.value("aDeadlineTime").toString(),
                                                            obj.value("aAbstract").toString(),
                                                            obj.value("aParticipation").toInt(),
-                                                           obj.value("aId").toInt()
+                                                           obj.value("aId").toInt(),
+                                                           obj.value("pId").toInt(),
+                                                           user_,
+                                                           obj.value("praiseCount").toInt()  // 点赞数
                                                            );
-                Cout<<"id    "<<obj.value("aId").toInt()<<"    aName"<<obj.value("aName").toString();
-                //ContentItem * c_item = new ContentItem(1,ui->listWidgetMainContent,images,"","","",1);
-                //ContentItem * c_item = new ContentItem(ui->listWidgetMainContent,User());
-                c_item->setStyleSheet("background-color:rgb(248,246,242);");
+                //c_item->setStyleSheet("background-color:rgb(248,246,242);");
                 c_item->setStyleSheet(ReadQStyleSheet::readQss(":/qss/qss_contentitem.qss"));
                 ui->listWidgetMainContent->addItem(item);
                 ui->listWidgetMainContent->setItemWidget(item,c_item);
                 item->setSizeHint(QSize(0,c_item->get_height()));   // 此处宽的设置为0不会出问题
-                qDebug()<<ui->listWidgetMainContent->width()<<"------------------------------"<<item->sizeHint().width();
                 images.clear();
             }
         }
@@ -337,16 +387,12 @@ void MainWidget::on_toolButtonUserSet_clicked()
         base_->move(ui->stackedWidget_main->width()-450,0);
         base_->show();
         choose_->move(s.width()-450,45);
-
-        qDebug()<<"["<<s.width()<<","<<s.height()<<"]";
         choose_->show();
-//        is_show_small_menu_ = !is_show_small_menu_;
     }
     else
     {
         choose_->setHidden(true);
         base_->setHidden(true);
-//        is_show_small_menu_ = !is_show_small_menu_;
     }
 }
 
@@ -390,11 +436,19 @@ void MainWidget::dealClickChoose(QListWidgetItem * current)
         if(*it == *wi)
         {
 
-            if(it->get_name()=="我创建的")
+            if(it->get_name()=="与我相关的活动")
             {
                 if(ui->listWidget_my_create->count()<1)
                 {
-                    ui->listWidget_my_create->showContent(user_.get_nickname(),-1);   //此处的名字先做测试用
+                    ui->listWidget_my_create->showContent(user_.get_id(),0);   //此处的名字先做测试用
+                }
+            }
+            if(it->get_name()=="动态")
+            {
+                if(ui->listWidget_user_dynamic->count()<1)
+                {
+                    Cout<<"开始初始化";
+                    initListDynamic();
                 }
             }
 
@@ -414,10 +468,11 @@ void MainWidget::dealClickChoose(QListWidgetItem * current)
 
 }
 
-void MainWidget::dealCreateChildActivity(QString name, QString decription)
+void MainWidget::dealCreateChildActivity(QString name, QString decription,int join_num,double score)
 {
+    Cout<<"收到信号";
     QListWidgetItem * item = new QListWidgetItem();
-    ChildActivityItem * c_item = new ChildActivityItem(ui->listWidget_child_activity,name,decription);
+    ChildActivityItem * c_item = new ChildActivityItem(ui->listWidget_child_activity,name,decription,join_num,score);
     item->setSizeHint(QSize(ui->listWidget_child_activity->width(),100));
     ui->listWidget_child_activity->addItem(item);
     ui->listWidget_child_activity->setItemWidget(item,c_item);
@@ -427,12 +482,6 @@ void MainWidget::dealGetHttpData(QNetworkReply *reply)
 {
     // 状态码
     int statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    if(statusCodeV!=200)
-    {
-        ui->listWidgetMainContent->addItem(QString("加载数据出错，请刷新"));
-        return;
-    }
-    qDebug()<<statusCodeV;
     QVariant redirectionTargetUrl = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
 
     switch(CURRENT_TYPE)
@@ -443,17 +492,160 @@ void MainWidget::dealGetHttpData(QNetworkReply *reply)
     case UPDATE_MAIN_ACT:
         setMainContent(reply);  // 更新显示
         break;
+    case INIT_DYNAMIC:
+        dealGetDynamic(reply);
+        break;
+    case UPDATE_DYNAMIC:
+        dealGetDynamic(reply);
+        break;
     case CREATE_ACT:
-
+        dealCreateActReturnInfo(reply);
         break;
     case SIGN_UP_ACT:
         break;
     case USER_CREATED:
         break;
+    case CREATED_DYNAMIC:    //新建动态
+        dealCreatedynamicReturnInfo(reply);
+        break;
     default:
         break;
     }
 
+
+}
+
+void MainWidget::dealCreateActReturnInfo(QNetworkReply *reply)
+{
+    if(reply->error()==QNetworkReply::NoError)
+    {
+        QByteArray bytes = reply->readAll();
+        QString string = QString::fromUtf8(bytes);
+
+        QJsonParseError json_error;
+        QJsonDocument json_document = QJsonDocument::fromJson(bytes,&json_error);
+        if(json_error.error!=QJsonParseError::NoError)
+        {
+            Cout<<"数据解析错误";
+            return;
+        }
+        if(json_document.object().value("createSuccess").toBool())
+        {
+            show_dialog_->showDialog("创建活动成功");
+        }
+        else
+        {
+            show_dialog_->showDialog("创建活动失败");
+        }
+
+    }
+    reply->deleteLater();
+}
+
+void MainWidget::dealSignUpActReturnInfo(QNetworkReply *reply)
+{
+    if(reply->error()==QNetworkReply::NoError)
+    {
+        QByteArray bytes = reply->readAll();
+        QString string = QString::fromUtf8(bytes);
+        QJsonParseError json_error;
+        QJsonDocument json_document = QJsonDocument::fromJson(bytes,&json_error);
+        if(json_error.error!=QJsonParseError::NoError)
+        {
+            Cout<<"数据解析错误";
+            return;
+        }
+        if(json_document.object().value("signUpSuccess").toBool())
+        {
+            show_dialog_->setMessage("报名成功");
+            show_dialog_->show();
+        }
+        else
+        {
+            show_dialog_->setMessage("报名失败");
+            show_dialog_->show();
+        }
+
+    }
+    reply->deleteLater();
+}
+
+void MainWidget::dealCreatedynamicReturnInfo(QNetworkReply *reply)
+{
+    if(reply->error()==QNetworkReply::NoError)
+    {
+        QByteArray bytes = reply->readAll();
+        QString string = QString::fromUtf8(bytes);
+        QJsonParseError json_error;
+        QJsonDocument json_document = QJsonDocument::fromJson(bytes,&json_error);
+        if(json_error.error!=QJsonParseError::NoError)
+        {
+            Cout<<"数据解析错误";
+            return;
+        }
+        if(json_document.object().value("publishSuccess").toBool())
+        {
+            show_dialog_->showDialog("发布动态成功");
+        }
+        else
+        {
+            show_dialog_->showDialog("发布动态失败");
+        }
+
+    }
+    reply->deleteLater();
+}
+
+void MainWidget::dealGetDynamic(QNetworkReply *reply)
+{
+    if(reply->error()==QNetworkReply::NoError)
+    {
+        QByteArray bytes = reply->readAll();
+        QString string = QString::fromUtf8(bytes);
+        QJsonParseError json_error;
+        QJsonDocument json_document = QJsonDocument::fromJson(bytes,&json_error);
+        if(json_error.error!=QJsonParseError::NoError)
+        {
+            Cout<<"数据解析错误";
+            return;
+        }
+        if(json_document.object().contains("trends"))
+        {
+            QJsonArray json_arr = json_document.object().value("trends").toArray();
+            QJsonObject obj;
+            QList<QPixmap>pixmap_list;
+            for(int i = 0;i<json_arr.size();++i)
+            {
+                obj = json_arr[i].toObject();
+                QJsonObject userDate = obj.value("user").toObject();
+                User u_temp(userDate.value("uId").toInt(),
+                            userDate.value("uName").toString(),
+                            userDate.value("uPassword").toString(),
+                            userDate.value("uSignature").toString(),
+                            userDate.value("uSex").toBool(),
+                            obj.value("userImage").toString(),
+                            userDate.value("uPhone").toString(),
+                            userDate.value("uEmail").toString());
+                Cout<<u_temp.get_headpath();
+                QListWidgetItem * item = new QListWidgetItem(ui->listWidget_user_dynamic);
+                UserDynamic * u_item = new UserDynamic(ui->listWidget_user_dynamic,
+                                                       u_temp,   //发布此动态的用户
+                                                       user_,
+                                                       obj.value("content").toString(),
+                                                       pixmap_list,
+                                                       obj.value("pId").toInt(),
+                                                       obj.value("praiseCount").toInt()
+                                                       );
+                ui->listWidget_user_dynamic->addItem(item);
+                ui->listWidget_user_dynamic->setItemWidget(item,u_item);
+                item->setSizeHint(QSize(0,u_item->getHeight()));
+            }
+        }
+        else
+        {
+            Cout<<"不包含trends";
+        }
+    }
 
 }
 
@@ -493,42 +685,44 @@ void MainWidget::on_pushButton_finished_clicked()
     QString name = ui->lineEdit_name->text();
     if(name=="")
     {
-        QMessageBox::warning(this,"错误","活动名称不能为空",QMessageBox::Ok);
+        show_dialog_->showDialog("活动名称不能为空");
         return;
     }
     QString abstract = ui->textEdit_abstract->toPlainText();
     if(abstract=="")
     {
-        QMessageBox::warning(this,"错误","摘要不能为空",QMessageBox::Ok);
+        show_dialog_->showDialog("摘要不能为空");
         return;
     }
     QString address = ui->lineEdit_address->text();
     if(address=="")
     {
-        QMessageBox::warning(this,"错误","活动地点不能为空",QMessageBox::Ok);
+        show_dialog_->showDialog("活动地点不能为空");
         return;
     }
     QDate current_date = QDate::currentDate();
     QDate date = ui->dateEdit_date->date();
     if(current_date>date)
     {
-        QMessageBox::warning(this,"错误","时光不能倒流（日期设置错误）",QMessageBox::Ok);
+        show_dialog_->showDialog("时光不能倒流（日期设置错误）");
         return;
     }
     QString description = ui->textEdit_decription->toPlainText();
     if(description=="")
     {
-        QMessageBox::warning(this,"错误","活动描述不能为空",QMessageBox::Ok);
+        show_dialog_->showDialog("活动描述不能为空");
         return;
     }
     QString notice = ui->lineEdit_notice->text();
     if(notice=="")
     {
         QMessageBox::warning(this,"错误","活动公告不能为空",QMessageBox::Ok);
+        show_dialog_->showDialog("活动公告不能为空");
         return;
     }
 
-    main_activity_->reset(1,name,date,abstract,description,address,notice);
+    // 保存获取到的主活动信息
+    main_activity_->reset(user_.get_id(),name,date,abstract,description,address,notice);
 
     if(ui->listWidget_child_activity->count()<1)  // 当第一次跳转到后面的页面的时候
     {
@@ -572,22 +766,18 @@ void MainWidget::on_pushButton_create_finish_clicked()
         QListWidgetItem * item = ui->listWidget_child_activity->item(i);
         QWidget * widget = ui->listWidget_child_activity->itemWidget(item);
         ChildActivityItem * c_item = dynamic_cast<ChildActivityItem*>(widget);
-        child_activity_vector_.push_back(QPair<QString,QString>(c_item->get_name(),c_item->get_abstract()));
+        child_activity_vector_.push_back(ChildActivity(-1,
+                                                       -1,
+                                                       c_item->get_name(),
+                                                       c_item->get_abstract(),
+                                                       c_item->get_score(),
+                                                       c_item->get_max_join()));
     }
-//    for(QPair<QString,QString> pair:child_activity_vector_)
-//    {
-//        qDebug()<<pair.first<<pair.second;
-//    }
 
-
-
+    // 获取所有选择了的基础类型
     auto list_base_type = ui->listWidget_base_type->selectedItems();
-//    for(int i = 0;i<list.size();i++)
-//    {
-//        qDebug()<<static_cast<QString>(list[i]->text());
-//    }
 
-    QList<QListWidgetItem*> list_user_define_type;
+//    QList<QListWidgetItem*> list_user_define_type;
 
 
 
@@ -614,30 +804,23 @@ void MainWidget::on_pushButton_create_finish_clicked()
                                           u_item->get_type_description()));
         }
 
-//        for(int i = 0;i<list_user_define_type.size();++i)
-//        {
-//            qDebug()<<list_user_define_type[i]->text();
-//        }
     }
 
 
-    //创建活动的接口不能分开
+
 
 
     // 将主活动数据转化为json格式
-//    QByteArray bytes = TransformToJson::mainActivityToJson("aaa",*main_activity_);
-
     QByteArray bytes = TransformToJson::activityToJson(
-                user_.get_nickname(),
+                user_.get_id(),
                 main_activity_.get(),
                 v_activity_data,
                 child_activity_vector_);
-    Cout<<bytes.data();
-    //  将子活动数据和报名表数据转化为json格式
 
-
+    CURRENT_TYPE = CREATE_ACT;             //设置接收消息的类型为创建活动
     // 发送服务器请求
-    QString url = "http://192.168.1.237:8080/test/activity/createActivity";
+    QString url = g_ip_url+"/activity/createActivity";
+
     QNetworkRequest request;
     request.setUrl(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
@@ -654,8 +837,6 @@ void MainWidget::on_toolButton_add_user_define_clicked()
 void MainWidget::on_pushButton_create_child_act_clicked()
 {
 
-
-
     on_toolButton_next_step_clicked();
 
 }
@@ -663,8 +844,51 @@ void MainWidget::on_pushButton_create_child_act_clicked()
 void MainWidget::on_toolButton_update_clicked()
 {
     ui->listWidgetMainContent->clear();
-    Cout<<"on_toolButton_update_clicked"<<"----"<<ui->listWidgetMainContent->width();
     CURRENT_TYPE = UPDATE_MAIN_ACT;
-    QUrl url("http://192.168.1.237:8080/test/activity/getAllActivity");
+    QUrl url(g_ip_url+"/activity/getAllActivity");
     QNetworkReply * reply = nam_->get(QNetworkRequest(url));
+}
+
+void MainWidget::on_pushButton_write_dynamic_clicked()
+{
+    if(!create_dynamic_)   // 第一次点击的时候再初始化对象
+    {
+        create_dynamic_.reset(new CreateDynamic());
+        connect(create_dynamic_.get(),&CreateDynamic::createDynamic,this,&MainWidget::publsh_dynamic);
+    }
+    create_dynamic_->show();
+}
+
+//新建动态
+void MainWidget::publsh_dynamic(QString content, QStringList &list)
+{
+    CURRENT_TYPE = CREATED_DYNAMIC;
+    QListWidgetItem * item = new QListWidgetItem(ui->listWidget_user_dynamic);
+    UserDynamic * u_item = new UserDynamic(ui->listWidget_user_dynamic,user_,user_,content,list,1,1);
+    ui->listWidget_user_dynamic->addItem(item);
+    ui->listWidget_user_dynamic->setItemWidget(item,u_item);
+    item->setSizeHint(QSize(0,u_item->getHeight()));
+
+    // 发布动态  上传数据到服务器
+    QString url = QString(g_ip_url+"/manager/publishMessage");
+    nam_->post(QNetworkRequest(QUrl(url)),QString("uId=%1&content=%2").arg(user_.get_id()).arg(content).toUtf8());
+
+
+}
+
+void MainWidget::on_pushButton_my_create_update_clicked()
+{
+    ui->listWidget_my_create->clear();
+    int index = ui->comboBox_choose_about_me->currentIndex();
+    Cout<<index;
+    ui->listWidget_my_create->showContent(user_.get_id(),index);
+}
+
+void MainWidget::on_pushButton_dynamic_update_clicked()
+{
+    ui->listWidget_user_dynamic->clear();
+    CURRENT_TYPE = UPDATE_DYNAMIC;
+    QUrl url(g_ip_url+QString("/manager/getAllTrends?flag=0"));
+    nam_->get(QNetworkRequest(url));
+    Cout<<"发送请求";
 }

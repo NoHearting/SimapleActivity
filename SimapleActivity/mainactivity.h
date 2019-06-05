@@ -22,7 +22,7 @@ public:
                  QString abstract,QString description,QString pic_path,int status,QString notice,
                  bool have_child,int total_score);
     /// @brief 重新设置所有值
-    void reset(int a_id,QString name,QDate dead_time,QString abstract,QString description,QString address,QString notice);
+    void reset(int u_id,QString name,QDate dead_time,QString abstract,QString description,QString address,QString notice);
 
     inline const QString get_name()const{return name_;}
     inline const QDate get_dead_time()const{return dead_time_;}

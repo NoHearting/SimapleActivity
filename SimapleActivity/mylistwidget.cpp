@@ -36,15 +36,15 @@ MyListWidget::MyListWidget(QWidget * parent):
 
 }
 
-void MyListWidget::showContent(QString name,int status)
+void MyListWidget::showContent(int u_id,int status)
 {
+    status_ = status;
     QString url = "http://192.168.1.237:8080/test/activity/getActivity";
     QNetworkRequest request;
     request.setUrl(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
-    QNetworkReply * reply = nam_->post(request,QString("uName=%1&aStatus=%2").arg(name).arg(status).toUtf8());
-    Cout<<"showContent";
 
+    QNetworkReply * reply = nam_->post(request,QString("uId=%1&flag=%2").arg(u_id).arg(status).toUtf8());
 }
 
 void MyListWidget::dealGetHttpData(QNetworkReply *reply)
@@ -63,9 +63,9 @@ void MyListWidget::dealGetHttpData(QNetworkReply *reply)
             return;
         }
         QJsonArray json_array;
-        if(json_document.object().contains("participationData"))
+        if(json_document.object().contains("activityData"))
         {
-            json_array = json_document.object().value("participationData").toArray();
+            json_array = json_document.object().value("activityData").toArray();
             for(int i = 0;i<json_array.size();i++)
             {
                 QJsonObject obj = json_array[i].toObject();
@@ -81,7 +81,10 @@ void MyListWidget::dealGetHttpData(QNetworkReply *reply)
                 this->addItem(item);
                 item->setSizeHint(QSize(0,400));
                 this->setItemWidget(item,m_item);
-                Cout<<i;
+                if(status_==2)
+                {
+                    m_item->setUpdateHidden(true);
+                }
             }
         }
         else

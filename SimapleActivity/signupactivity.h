@@ -28,6 +28,8 @@
 #include "readqstylesheet.h"
 #include "signupitem.h"
 #include "childactivityitem.h"
+#include "transformtojson.h"
+#include "showmessage.h"
 
 using namespace std;
 
@@ -42,7 +44,7 @@ class SignUpActivity : public QWidget
 public:
     explicit SignUpActivity(QWidget *parent = 0);
     SignUpActivity(QWidget *parent,int activity_id);
-    SignUpActivity(QWidget *parent, int activity_id,QString name);
+    SignUpActivity(QWidget *parent, int activity_id,QString name,int u_id);
 
 
     /// @brief 显示出报名项
@@ -71,14 +73,7 @@ protected:
     /// @brief 重写mouseReleaseEvent函数
     void mouseReleaseEvent(QMouseEvent *);
 
-    /// @brief 处理从服务器上拉下来的数据
-    void dealGetHttpData(QNetworkReply * reply);
 
-    /// @brief 处理获取活动报名表信息
-    void dealActivityEntryForm(QNetworkReply * reply);
-
-    /// @brief 处理一个活动的子活动显示
-    void dealChooseChildActivity(QNetworkReply * reply);
 
 private slots:
     void on_toolButton_close_clicked();
@@ -99,9 +94,25 @@ private:
     shared_ptr<QNetworkAccessManager>nam_;
 
     int activity_id_;  ///< 正在报名的活动的id
+    int u_id_;         ///< 报名子活动的用户的id
     QString activity_name_;  ///< 正在报名的活动的名字
 
     int status_ = 0;     ///< 状态   当前应该接受的数据内容
+
+    shared_ptr<ShowMessage>show_dialog_;
+
+
+    /// @brief 处理从服务器上拉下来的数据
+    void dealGetHttpData(QNetworkReply * reply);
+
+    /// @brief 处理获取活动报名表信息
+    void dealActivityEntryForm(QNetworkReply * reply);
+
+    /// @brief 处理一个活动的子活动显示
+    void dealChooseChildActivity(QNetworkReply * reply);
+
+    /// @brief 处理报名请求后的返回信息
+    void dealSignUpReturnInfo(QNetworkReply * reply);
 };
 
 #endif // SIGNUPACTIVITY_H

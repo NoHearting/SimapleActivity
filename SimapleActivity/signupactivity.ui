@@ -142,7 +142,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="imagelogin.qrc">
+          <iconset>
            <normaloff>:/Login/C:/Users/ASUS/Pictures/Login/wkf.png</normaloff>:/Login/C:/Users/ASUS/Pictures/Login/wkf.png</iconset>
          </property>
          <property name="autoRaise">
@@ -187,7 +187,7 @@
        </font>
       </property>
       <property name="text">
-       <string>请选择想要命名的具体项目</string>
+       <string>请选择想要参加的具体项目</string>
       </property>
      </widget>
      <widget class="QListWidget" name="listWidget_child_data">
@@ -215,8 +215,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="imagelogin.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

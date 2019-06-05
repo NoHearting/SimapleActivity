@@ -8,8 +8,8 @@ SignUpItem::SignUpItem(QWidget *parent) :
     ui->setupUi(this);
 }
 
-SignUpItem::SignUpItem(QWidget *parent, QString name,QString des):
-    QWidget(parent),
+SignUpItem::SignUpItem(QWidget *parent, QString name,int f_id,QString des):
+    QWidget(parent),f_id_(f_id),
     ui(new Ui::SignUpItem)
 {
     ui->setupUi(this);
@@ -44,4 +44,9 @@ QString SignUpItem::get_content()
 SignUpItem::~SignUpItem()
 {
     delete ui;
+}
+
+int SignUpItem::getF_id() const
+{
+    return f_id_;
 }

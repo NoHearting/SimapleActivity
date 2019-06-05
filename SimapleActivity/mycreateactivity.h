@@ -39,6 +39,7 @@ class MyCreateActivity : public QWidget
 public:
     explicit MyCreateActivity(QWidget *parent = 0);
     MyCreateActivity(QWidget *parent,QString activity_id,QString activity_name,QString activity_abstract);
+    void setUpdateHidden(bool flag);
     ~MyCreateActivity();
 
 private:
@@ -54,6 +55,8 @@ private:
 
 
     /// @brief 从服务器获取数据
+    ///
+    ///     设置的是显示“我创建的”所有活动的信息，包括显示子活动
     void dealGetHttpData(QNetworkReply * reply);
 };
 

@@ -18,15 +18,19 @@ void CreateChildActivity::clear()
 {
     ui->lineEdit->setText("");
     ui->textEdit->setText("");
+    ui->spinBox->setValue(0);
+    ui->doubleSpinBox->setValue(0);
 }
 
 void CreateChildActivity::on_pushButton_finished_clicked()
 {
     QString name = ui->lineEdit->text();
     QString description = ui->textEdit->toPlainText();
+    int join_time = ui->spinBox->value();
+    double socre = ui->doubleSpinBox->value();
     if(name!=""&&description!="")
     {
-        emit created(name,description);
+        emit created(name,description,join_time,socre);
         this->close();
     }
     else

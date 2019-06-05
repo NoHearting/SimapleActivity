@@ -21,7 +21,7 @@ ChildActivityItem::ChildActivityItem(QWidget *parent, QString child_activity_nam
 
     update_.reset(new CreateChildActivity("修改子活动信息"));
     // 接收修改活动信息界面发送的提交消息
-    connect(update_.get(),&CreateChildActivity::created,this,[=](QString name,QString abstract){
+    connect(update_.get(),&CreateChildActivity::created,this,[=](QString name,QString abstract,int max_join,double score){
         ui->label_activity_name->setText(name);
         ui->label_activity_abstract->setText(abstract);
     });
@@ -34,14 +34,41 @@ ChildActivityItem::ChildActivityItem(QWidget *parent, QString child_activity_nam
     child_activit_abstract_(child_activit_abstract),ca_id_(id),
     ui(new Ui::ChildActivityItem)
 {
+    ui->setupUi(this);
 
+    ui->label_activity_name->setText(child_activity_name);
+    ui->label_activity_abstract->setText(child_activit_abstract);
+    initWidgetResource();
+
+
+
+
+}
+
+ChildActivityItem::ChildActivityItem(QWidget *parent, QString child_activity_name, QString child_activit_abstract, int max_join, double score):
+    QWidget(parent),child_activity_name_(child_activity_name),child_activit_abstract_(child_activit_abstract ),
+    max_join_(max_join),score_(score),
+    ui(new Ui::ChildActivityItem)
+{
+    ui->setupUi(this);
+
+    Cout<<"构造";
+    ui->label_activity_name->setText(child_activity_name);
+    ui->label_activity_abstract->setText(child_activit_abstract);
+    initWidgetResource();
+}
+
+ChildActivityItem::ChildActivityItem(QWidget *parent, const ChildActivity &ca):
+    QWidget(parent),ca_(ca),
+    ui(new Ui::ChildActivityItem)
+{
+    ui->setupUi(this);
 }
 
 void ChildActivityItem::reset(QString name, QString abstract)
 {
     ui->label_activity_name->setText(name);
     ui->label_activity_abstract->setText(abstract);
-
 }
 
 ChildActivityItem::~ChildActivityItem()
@@ -93,6 +120,15 @@ void ChildActivityItem::set_hidden_no_use(bool flag)
 
 void ChildActivityItem::on_pushButton_update_clicked()
 {
+    if(!update_)
+    {
+        update_.reset(new CreateChildActivity("修改子活动信息"));
+        // 接收修改活动信息界面发送的提交消息
+        connect(update_.get(),&CreateChildActivity::created,this,[=](QString name,QString abstract,int max_join,double score){
+            ui->label_activity_name->setText(name);
+            ui->label_activity_abstract->setText(abstract);
+        });
+    }
     update_->clear();
     update_->show();
 }

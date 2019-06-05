@@ -28,7 +28,7 @@ private slots:
 private:
     Ui::CreateChildActivity *ui;
 signals:
-    void created(QString act_name,QString act_description);
+    void created(QString act_name,QString act_description,int join_time,double score);
 };
 
 #endif // CREATECHILDACTIVITY_H

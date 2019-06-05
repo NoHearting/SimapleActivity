@@ -115,7 +115,7 @@ void Register::on_pushButtonRegister_clicked()
         QMessageBox::warning(this,"错误","密码不能为空",QMessageBox::Ok);
         return;
     }
-    QString sure_pwd = ui->lineEdit_user_name->text();
+    QString sure_pwd = ui->lineEdit_sure_pwd->text();
     if(sure_pwd=="")
     {
         QMessageBox::warning(this,"错误","请确认密码",QMessageBox::Ok);
@@ -143,14 +143,25 @@ void Register::on_pushButtonRegister_clicked()
     }
     bool who = man?man:woman;
 
+    QString email = ui->lineEdit_email->text();
+    if(email=="")
+    {
+        QMessageBox::warning(this,"错误","邮箱不能为空",QMessageBox::Ok);
+        return;
+    }
+
     QString url = "http://192.168.1.237:8080/test/user/register";
-    QString append = QString("?uName=%1&uPassword=%2&confirmPassword=%3&uPhone=%4&uSex=%5&checkCode=1")
+    QString append = QString("uName=%1&uPassword=%2&confirmPassword=%3&uPhone=%4&uSex=%5&uEmail=%6&checkCode=1")
             .arg(name)
             .arg(pwd)
             .arg(sure_pwd)
             .arg(phone)
-            .arg(who);
-    QNetworkReply * reply = nam_->get(QNetworkRequest(QUrl(url+append)));
+            .arg(who)
+            .arg(email);
+    QNetworkRequest request;
+    request.setUrl(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+    QNetworkReply * reply = nam_->post(request,append.toUtf8());
 
 }
 
