@@ -25,6 +25,8 @@
 
 #include "childactivityitem.h"
 #include "readqstylesheet.h"
+#include "mainactivity.h"
+#include "updateactivity.h"
 
 using namespace std;
 
@@ -39,8 +41,12 @@ class MyCreateActivity : public QWidget
 public:
     explicit MyCreateActivity(QWidget *parent = 0);
     MyCreateActivity(QWidget *parent,QString activity_id,QString activity_name,QString activity_abstract);
+    MyCreateActivity(QWidget *parent,const MainActivity & main_act);
     void setUpdateHidden(bool flag);
     ~MyCreateActivity();
+
+private slots:
+    void on_pushButton_update_clicked();
 
 private:
     Ui::MyCreateActivity *ui;
@@ -49,7 +55,12 @@ private:
     QString activity_name_;
     QString activity_abstract_;
 
+    MainActivity main_act_;     ///主活动信息
+
     shared_ptr<QNetworkAccessManager>nam_;    ///< 从服务器接收数据
+
+    shared_ptr<UpdateActivity> update_act_;  ///< 修改活动信息界面
+
 
     inline QString get_id(){return activity_id_;}
 

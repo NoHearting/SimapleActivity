@@ -84,6 +84,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="pushButton_reply">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
            <property name="text">
             <string>回复</string>
            </property>

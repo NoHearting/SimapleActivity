@@ -150,7 +150,7 @@ void Register::on_pushButtonRegister_clicked()
         return;
     }
 
-    QString url = "http://192.168.1.237:8080/test/user/register";
+    QString url = ReadQStyleSheet::g_ip_url+"/user/register";
     QString append = QString("uName=%1&uPassword=%2&confirmPassword=%3&uPhone=%4&uSex=%5&uEmail=%6&checkCode=1")
             .arg(name)
             .arg(pwd)

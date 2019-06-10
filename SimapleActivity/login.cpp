@@ -15,12 +15,14 @@ Login::Login(QWidget *parent) :
             ui->widgetId->setStyleSheet("border-bottom:1px solid rgb(184,186,188);");
             ui->comboBox_id->setStyleSheet("border:none");
             ui->label_id->setPixmap(QPixmap(":/Login/C:/Users/ASUS/Pictures/Login/human-1-fill-gray.png"));
+            //ui->comboBox_id->setEditText(curr_combobox_text_);
         }
         else
         {
             ui->widgetId->setStyleSheet("border-bottom:1px solid rgb(18,183,245)");
             ui->comboBox_id->setStyleSheet("border:none");
             ui->label_id->setPixmap(QPixmap(":/Login/C:/Users/ASUS/Pictures/Login/human-1-fill-blue.png"));
+            //ui->comboBox_id->setEditText(curr_combobox_text_);
         }
     });
 
@@ -39,6 +41,12 @@ Login::Login(QWidget *parent) :
         }
     });
 
+    rt_.reset(new ReplyTimeout());
+    connect(rt_.get(),&ReplyTimeout::timeout,this,[=](){
+        show_dialog_->showDialog("连接超时");
+        ui->pushButton_login_id_and_pwd->setText("登陆");
+        ui->pushButton_login_id_and_pwd->setEnabled(true);
+    });
     show_dialog_.reset(new ShowMessage(0,""));
 }
 
@@ -60,9 +68,35 @@ void Login::initWinRource()
     shadow->setBlurRadius(10);     //阴影的模糊半径
     ui->LoginInner->setGraphicsEffect(shadow);
     z_ = QPoint(0,0);
-    ui->comboBox_id->addItem("zhangsan");
-    ui->comboBox_id->addItem("第二个");
-    ui->comboBox_id->addItem("第三个");
+
+//    QListWidget * m_listWidget = new QListWidget(this);
+//    //m_listWidget->setItemDelegate(new NoFocusFrameDelegate(this));
+//    ui->comboBox_id->setModel(m_listWidget->model());
+//    ui->comboBox_id->setView(m_listWidget);
+
+//    QString str[5]={"zhangsan","李四","王五","不知道","看看长度"};
+//    for(int i = 0;i<5;i++)
+//    {
+//        QListWidgetItem * item = new QListWidgetItem(m_listWidget);
+//        ComboBoxItem * c_item = new ComboBoxItem(this);
+//        c_item->setComboBoxItemLabelText(str[i]);
+//        m_listWidget->addItem(item);
+//        m_listWidget->setItemWidget(item,c_item);
+//        connect(c_item,&ComboBoxItem::clickItem,this,[=](QString id){
+//            ui->comboBox_id->setEditText("AAAAA");
+//            ui->comboBox_id->setEditText("BBBBB");
+//            ui->comboBox_id->setCurrentText("CCCCC");
+//            //Cout<<"pressed";
+//            int row = ui->comboBox_id->view()->currentIndex().row();
+//            Cout<<row;
+//        });
+//    }
+//    QListWidgetItem * t_item = m_listWidget->item(0);
+//    ComboBoxItem * c_item = dynamic_cast<ComboBoxItem*>(m_listWidget->itemWidget(t_item));
+//    ui->comboBox_id->setEditText(c_item->getComboBoxItemLabelText());
+
+    ui->comboBox_id->addItems(QStringList{"zhangsan","李四","王五"});
+
 }
 
 void Login::mouseMoveEvent(QMouseEvent * e)
@@ -126,16 +160,14 @@ void Login::on_pushButton_login_id_and_pwd_clicked()
     QString id = ui->comboBox_id->currentText();
     QString pwd = ui->lineEdit_password->text();
 
-    QUrl url(g_ip_url+"/user/login");
+    QUrl url(ReadQStyleSheet::g_ip_url+"/user/login");
     QByteArray append = QString("uName=%1&uPassword=%2").arg(id).arg(pwd).toUtf8();
     QNetworkReply * reply = nam_->post(QNetworkRequest(url),append);
 
-    ReplyTimeout * timeout = new ReplyTimeout(reply,10000);
-    connect(timeout,&ReplyTimeout::timeout,this,[=](){
-        show_dialog_->showDialog("连接超时");
-    });
+    rt_->checking(reply,10000);    // 10s 超时时间
 
-    ui->pushButton_login_id_and_pwd->setText("登陆中");
+    ui->pushButton_login_id_and_pwd->setText("登陆中.....");
+    ui->pushButton_login_id_and_pwd->setEnabled(false);
 //    // 服务器验证
 //    User user(1,"无心","pwd","相信但不迷失",true,"c:","123644545545","qqdada@qq.com");
 //    emit isOk(user);
@@ -167,6 +199,7 @@ void Login::dealGetData(QNetworkReply *reply)
         show_dialog_->showDialog("登录成功！！！");
         if(is_login)
         {
+
             QJsonObject obj = json_document.object().value("userData").toObject();
             QString pic_url = json_document.object().value("userImage").toString();
 
@@ -194,4 +227,21 @@ void Login::dealGetData(QNetworkReply *reply)
 
     }
     reply->deleteLater();
+}
+
+void Login::on_toolButton_3_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void Login::on_pushButton_sure_clicked()
+{
+    QString url = ui->lineEdit_url->text();
+    ReadQStyleSheet::setUrl(url);
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+void Login::on_pushButton_cancel_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
 }

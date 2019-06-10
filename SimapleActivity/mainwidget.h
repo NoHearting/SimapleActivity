@@ -19,12 +19,16 @@
 #include <QMap>
 #include <QVector>
 #include <QPair>
+#include <QLabel>
+#include <QHttpMultiPart>
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QHttpMultiPart>
+#include <QHttpPart>
 
 #include "readqstylesheet.h"
 #include "widgetitem.h"
@@ -133,6 +137,8 @@ private slots:
 
     void on_pushButton_dynamic_update_clicked();
 
+    void on_pushButton_user_set_save_clicked();
+
 private:
     Ui::MainWidget *ui;
 
@@ -149,7 +155,8 @@ private:
                         USER_CREATED,     ///< 显示用户创建活动
                         CREATED_DYNAMIC,   ///< 新建动态
                         INIT_DYNAMIC,       ///< 初始化动态
-                        UPDATE_DYNAMIC      ///< 刷新动态
+                        UPDATE_DYNAMIC,      ///< 刷新动态
+                        UPLOAD_IMAGE         ///< 上传图片
                        };    ///
 
     HTTP_DATA_TYPE CURRENT_TYPE = AUTO_MAIN_ACT;   /// 当前的类型
@@ -197,6 +204,10 @@ private:
 
     shared_ptr<ShowMessage> show_dialog_;        ///< 显示消息   以对话框的形式
 
+    QString changed_head_path_;           ///< 更改头像时保存更改的头像的图片的路径
+
+    QStringList dynamic_iamges_;        ///< 创建动态时添加的图片
+
     /// @brief 初始化窗口设置
     ///
     /// 窗口qss渲染
@@ -233,6 +244,9 @@ private:
 
     /// @brief 处理初始化动态，从服务器拉下动态的时候
     void dealGetDynamic(QNetworkReply * reply);
+
+    /// @brief 处理上传图片后服务器的返回信息
+    void dealUploadImage(QNetworkReply * reply);    // 未启用
 
 };
 

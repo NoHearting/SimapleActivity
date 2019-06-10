@@ -44,7 +44,13 @@ SOURCES += main.cpp\
     commentitem.cpp \
     showmessage.cpp \
     childactivity.cpp \
-    replytimeout.cpp
+    replytimeout.cpp \
+    mylabel.cpp \
+    comboboxitem.cpp \
+    nofocusframedelegate.cpp \
+    updateactivity.cpp \
+    manageritem.cpp \
+    outerwidget.cpp
 
 HEADERS  += mainwidget.h \
     login.h \
@@ -77,7 +83,13 @@ HEADERS  += mainwidget.h \
     commentitem.h \
     showmessage.h \
     childactivity.h \
-    replytimeout.h
+    replytimeout.h \
+    mylabel.h \
+    comboboxitem.h \
+    nofocusframedelegate.h \
+    updateactivity.h \
+    manageritem.h \
+    outerwidget.h
 
 FORMS    += mainwidget.ui \
     login.ui \
@@ -96,7 +108,10 @@ FORMS    += mainwidget.ui \
     writecomment.ui \
     commentitem.ui \
     showmessage.ui \
-    labelpraise.ui
+    comboboxitem.ui \
+    updateactivity.ui \
+    manageritem.ui \
+    outerwidget.ui
 
 CONFIG += C++11
 

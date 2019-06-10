@@ -68,7 +68,7 @@ void WriteComment::mouseReleaseEvent(QMouseEvent *)
 void WriteComment::initComment()
 {
     // 由动态的id获取动态的所有评论
-    QString url = g_ip_url+QString("/manager/getComments?pId=%1").arg(p_id_);
+    QString url = ReadQStyleSheet::g_ip_url+QString("/manager/getComments?pId=%1").arg(p_id_);
     nam_->get(QNetworkRequest(QUrl(url)));
     status_ = 1;
 
@@ -189,7 +189,7 @@ void WriteComment::on_pushButton_comment_clicked()
 
     string str = "回复"+r_name_.toStdString()+":";
 
-    QString url = g_ip_url+"/manager/comment";
+    QString url = ReadQStyleSheet::g_ip_url+"/manager/comment";
 
     QNetworkRequest request;
     request.setUrl(url);

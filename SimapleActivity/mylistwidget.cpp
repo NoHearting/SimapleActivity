@@ -39,7 +39,7 @@ MyListWidget::MyListWidget(QWidget * parent):
 void MyListWidget::showContent(int u_id,int status)
 {
     status_ = status;
-    QString url = "http://192.168.1.237:8080/test/activity/getActivity";
+    QString url = ReadQStyleSheet::g_ip_url+"/activity/getActivity";
     QNetworkRequest request;
     request.setUrl(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
@@ -71,12 +71,35 @@ void MyListWidget::dealGetHttpData(QNetworkReply *reply)
                 QJsonObject obj = json_array[i].toObject();
                 Cout<<obj.value("aId").toInt()<<"--"<<obj.value("aName").toString();
                 QListWidgetItem * item = new QListWidgetItem(this);
-                MyCreateActivity * m_item = new MyCreateActivity(0,
-                                                                 QString::number(obj.value("aId").toInt()),
-                                                                 obj.value("aName").toString(),
-                                                                 obj.value("aAbstract").toString()
+//                MyCreateActivity * m_item = new MyCreateActivity(this,
+//                                                                 QString::number(obj.value("aId").toInt()),
+//                                                                 obj.value("aName").toString(),
+//                                                                 obj.value("aAbstract").toString()
+//                                                                 );
+                QStringList pictures;
+                QJsonArray image_arr = obj.value("images").toArray();  // 图片数组
+                for(int i = 0;i<image_arr.size();++i)
+                {
+
+                    pictures.push_back(image_arr[i].toString());
+                }
+
+                MyCreateActivity * m_item = new MyCreateActivity(this,MainActivity(
+                                                                                 obj.value("aId").toInt(),
+                                                                                 obj.value("uId").toInt(),
+                                                                                 obj.value("aName").toString(),
+                                                                                 obj.value("aCreationTime").toString(),
+                                                                                 obj.value("aDeadlineTime").toString(),
+                                                                                 obj.value("aPartionpation").toInt(),
+                                                                                 obj.value("aAbstract").toString(),
+                                                                                 obj.value("aDescreption").toString(),
+                                                                                 pictures,
+                                                                                 obj.value("aStatus").toInt(),
+                                                                                 obj.value("aNotice").toString(),
+                                                                                 true,
+                                                                                 0
+                                                                                   )
                                                                  );
-//                MyCreateActivity * m_item = new MyCreateActivity();
                 m_item->setStyleSheet("background-color:rgb(248,246,242);");
                 this->addItem(item);
                 item->setSizeHint(QSize(0,400));

@@ -15,7 +15,7 @@
 #include <QString>
 
 #define  Cout qDebug()<<"[ "<<__FILE__<<":"<<__LINE__<<" ]"
-const QString g_ip_url = "http://192.168.1.237:8080/test";
+
 
 class ReadQStyleSheet
 {
@@ -27,6 +27,10 @@ public:
     /// @return QString Qss样式
     static QString readQss(QString filePath);
 
+
+    static void setUrl(const QString & url);
+
+    static QString g_ip_url;
 };
 
 #endif // READQSTYLESHEET_H

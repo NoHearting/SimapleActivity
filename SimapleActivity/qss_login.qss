@@ -1,5 +1,5 @@
 #LoginInner{
-    background-color:rgb(62,188,125);
+    /*background-color:rgb(62,188,125);*/
 }
 
 #LoginContent{
@@ -20,12 +20,17 @@
     border-bottom:1px solid rgb(184,186,188);
 }
 
-/*登录按钮的美化*/
-#pushButton_login_id_and_pwd{
+/*按钮的美化*/
+QPushButton{
     background-color:rgb(28,196,252);
     color:white;
     border:none;
     border-radius:5px;
+}
+
+QPushButton:hover{
+    background-color:rgb(33,148,248);
+
 }
 
 /*将app名字换为白色*/
@@ -37,6 +42,17 @@
     background:transparent;
 }
 
+#LoginContent{
+    border-top:1px solid white;
+
+}
+
+#lineEdit_url{
+    border:none;
+    border-radius:5px;
+    background-color:rgba(255,255,255,0.3);
+    color:black;
+}
 
 
 QComboBox::drop-down{
@@ -51,4 +67,17 @@ QComboBox::drop-down:on{
 
 QComboBox::drop-down:off{
     image:url(":/Login/C:/Users/ASUS/Pictures/Login/vsp_s.png");
+}
+
+QComboBox QAbstractItemView::item {
+    height: 32px;
+    border:none;
+}
+
+QListView::item {
+    background-color: rgba(255,25,255,0.2);
+}
+
+QListView::item:hover {
+    background: #BDD7FD;
 }

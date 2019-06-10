@@ -1,33 +1,29 @@
-#ifndef USERDEFINETYPE_H
-#define USERDEFINETYPE_H
+/**
+  * @file
+  * @brief 外层Widget，用于设置窗口透明，窗口移动
+  * @version 1.0
+  * @date 2019年6月9日11:04:01
+  * @author
+  */
+#ifndef OUTERWIDGET_H
+#define OUTERWIDGET_H
 
-#include <QDialog>
-#include <QString>
+#include <QWidget>
 #include <QMouseEvent>
 #include <QPoint>
-#include <QGraphicsDropShadowEffect>
-
-#include "outerwidget.h"
 
 namespace Ui {
-class UserDefineType;
+class OuterWidget;
 }
 
-class UserDefineType : public QDialog
+class OuterWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit UserDefineType(QWidget *parent = 0);
+    explicit OuterWidget(QWidget *parent = 0);
+    ~OuterWidget();
 
-    QString get_type()const;
-    QString get_type_description()const;
-    ~UserDefineType();
-
-private slots:
-    void on_pushButton_sure_clicked();
-
-    void on_toolButton_close_clicked();
 
 protected:
     /// @brief 重写mouseMoveEvent函数
@@ -44,11 +40,9 @@ protected:
     /// @brief 重写mouseReleaseEvent函数
     void mouseReleaseEvent(QMouseEvent *);
 private:
-    Ui::UserDefineType *ui;
+    Ui::OuterWidget *ui;
 
     QPoint z_;
-signals:
-    void addFinish(QString user_define,QString user_define_description);
 };
 
-#endif // USERDEFINETYPE_H
+#endif // OUTERWIDGET_H

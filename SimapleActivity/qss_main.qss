@@ -146,6 +146,45 @@ QToolButton{
 }
 
 
+#comboBox_choose_about_me,#comboBox_choose_dynamic{
+    border:1px solid rgb(63,204,84);
+    border-radius:5px;
+    background-color:rgb(255,255,255);
+}
+
+/*活动*/
+QComboBox::drop-down#comboBox_choose_about_me{
+    image:url(":/Login/C:/Users/ASUS/Pictures/Login/vsp_s.png");
+    subcontrol-position: bottom right;
+    width:15px;
+    padding-right:5px;
+
+}
+QComboBox::drop-down:on#comboBox_choose_about_me{
+    image:url(":/Login/C:/Users/ASUS/Pictures/Login/vxt.png");
+}
+
+QComboBox::drop-down:off#comboBox_choose_about_me{
+    image:url(":/Login/C:/Users/ASUS/Pictures/Login/vsp_s.png");
+}
+
+/*动态*/
+QComboBox::drop-down#comboBox_choose_dynamic{
+    image:url(":/Login/C:/Users/ASUS/Pictures/Login/vsp_s.png");
+    subcontrol-position: bottom right;
+    width:15px;
+    padding-right:5px;
+
+}
+
+QComboBox::drop-down:on#comboBox_choose_dynamic{
+    image:url(":/Login/C:/Users/ASUS/Pictures/Login/vxt.png");
+}
+
+QComboBox::drop-down:off#comboBox_choose_dynamic{
+    image:url(":/Login/C:/Users/ASUS/Pictures/Login/vsp_s.png");
+}
+
 
 /*QDateEdit::up-arrow{
     background-image:url(":/Login/C:/Users/ASUS/Pictures/Login/vxt.png") no-repeat -50 0;
@@ -207,6 +246,12 @@ QDateEdit::down-arrow{
 #listWidget_user_dynamic{
     border:none;
     background:transparent;
+}
+
+/*设置界面的头像  设置为圆形*/
+#label_user_set_head{
+    border-radius:40px;
+
 }
 QScrollBar:vertical{
     background:transparent;

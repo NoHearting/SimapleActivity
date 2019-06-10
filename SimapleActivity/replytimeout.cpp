@@ -16,10 +16,20 @@ ReplyTimeout::ReplyTimeout(QNetworkReply *reply, int timeout):
     }
 }
 
+void ReplyTimeout::checking(QNetworkReply *reply, int timeout)
+{
+    Q_ASSERT(reply);
+    //Q_ASSERT(false);
+    if(reply&&reply->isRunning())
+    {
+        QTimer::singleShot(timeout,this,&ReplyTimeout::onTimeout);
+    }
+}
+
 void ReplyTimeout::onTimeout()
 {
     QNetworkReply * reply = dynamic_cast<QNetworkReply*>(parent());
-    if(reply->isRunning())
+    if(reply&&reply->isRunning())
     {
         reply->abort();
         reply->deleteLater();

@@ -20,6 +20,8 @@ public:
     explicit ReplyTimeout(QObject *parent = 0);
     ReplyTimeout(QNetworkReply * reply,int timeout);
 
+    void checking(QNetworkReply *reply,int timeout);
+
 signals:
     void timeout();
 public slots:

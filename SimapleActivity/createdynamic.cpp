@@ -50,11 +50,8 @@ void CreateDynamic::on_toolButton_add_image_clicked()
 void CreateDynamic::on_pushButton_publish_clicked()
 {
     QString content = ui->textEdit_content->toPlainText();
-    Cout<<&list_;
     emit createDynamic(content,list_);
-
     this->close();
-
 }
 
 void CreateDynamic::reduce_item(const QModelIndex &index)

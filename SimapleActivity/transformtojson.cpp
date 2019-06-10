@@ -14,7 +14,7 @@ QByteArray TransformToJson::activityToJson(int u_id, const MainActivity *main_ac
     //主活动信息对象
     QJsonObject json_main_act_obj;
     json_main_act_obj.insert("aName",main_activity->get_name());
-    json_main_act_obj.insert("aDeadlineTime",main_activity->get_dead_time().toString("yyyy-MM-dd"));
+    json_main_act_obj.insert("aDeadlineTime",main_activity->get_dead_time());
     json_main_act_obj.insert("uId",u_id);
     json_main_act_obj.insert("aAbstract",main_activity->get_abstract());
     json_main_act_obj.insert("aDescription",main_activity->get_description());

@@ -16,12 +16,17 @@
 #include <QNetworkReply>
 #include <QMessageBox>
 #include <QTimer>
+#include <QListWidget>
+#include <QListWidgetItem>
+
 
 #include "register.h"
 #include "readqstylesheet.h"
 #include "user.h"
 #include "showmessage.h"
 #include "replytimeout.h"
+#include "comboboxitem.h"
+#include "nofocusframedelegate.h"
 
 
 using namespace std;
@@ -52,6 +57,10 @@ private:
     bool over_timer_ = false;         ///< 判断登录请求是否超时
 
     QTimer timer_;       ///< 用于检查请求是否超时
+
+    QString curr_combobox_text_;
+
+    shared_ptr<ReplyTimeout>rt_;      ///< 检验请求超时
 
 
 
@@ -95,6 +104,9 @@ private slots:
 
    /// @brief 当从服务器获取信息后进行处理此消息
    void dealGetData(QNetworkReply * reply);
+   void on_toolButton_3_clicked();
+   void on_pushButton_sure_clicked();
+   void on_pushButton_cancel_clicked();
 };
 
 #endif // LOGIN_H

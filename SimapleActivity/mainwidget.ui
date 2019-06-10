@@ -350,6 +350,9 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
                <property name="text">
                 <string>刷新</string>
                </property>
@@ -378,6 +381,9 @@
                  <family>楷体</family>
                  <pointsize>11</pointsize>
                 </font>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="text">
                 <string>新建活动</string>
@@ -466,20 +472,16 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="toolTip">
+                <string>选择显示的内容</string>
+               </property>
+               <property name="toolTipDuration">
+                <number>1</number>
+               </property>
               </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_39">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
              </item>
              <item>
               <widget class="QPushButton" name="pushButton_my_create_update">
@@ -494,6 +496,9 @@
                  <width>75</width>
                  <height>20</height>
                 </size>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="text">
                 <string>刷新</string>
@@ -534,6 +539,18 @@
          </widget>
         </widget>
         <widget class="QWidget" name="dynamic">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <layout class="QGridLayout" name="gridLayout_9">
           <item row="0" column="0">
            <widget class="QWidget" name="widget_dynamic_nav" native="true">
@@ -570,11 +587,27 @@
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>717</width>
-                 <height>19</height>
+                 <width>40</width>
+                 <height>20</height>
                 </size>
                </property>
               </spacer>
+             </item>
+             <item>
+              <widget class="QComboBox" name="comboBox_choose_dynamic">
+               <property name="minimumSize">
+                <size>
+                 <width>150</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>150</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QPushButton" name="pushButton_dynamic_update">
@@ -595,6 +628,9 @@
                  <family>楷体</family>
                  <pointsize>11</pointsize>
                 </font>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="text">
                 <string>刷新</string>
@@ -620,6 +656,9 @@
                  <family>楷体</family>
                  <pointsize>11</pointsize>
                 </font>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="contextMenuPolicy">
                 <enum>Qt::DefaultContextMenu</enum>
@@ -854,7 +893,7 @@
            </rect>
           </property>
          </widget>
-         <widget class="QLabel" name="label_user_set_head">
+         <widget class="MyLabel" name="label_user_set_head">
           <property name="geometry">
            <rect>
             <x>150</x>
@@ -899,6 +938,9 @@
             <height>23</height>
            </rect>
           </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
           <property name="text">
            <string>保存</string>
           </property>
@@ -912,8 +954,24 @@
             <height>23</height>
            </rect>
           </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
           <property name="text">
            <string>取消</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_test">
+          <property name="geometry">
+           <rect>
+            <x>570</x>
+            <y>180</y>
+            <width>211</width>
+            <height>271</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>TextLabel</string>
           </property>
          </widget>
         </widget>
@@ -990,6 +1048,9 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
                <property name="text">
                 <string/>
                </property>
@@ -1032,6 +1093,9 @@
                  <width>30</width>
                  <height>30</height>
                 </size>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="text">
                 <string/>
@@ -1082,7 +1146,7 @@
           <item row="1" column="0">
            <widget class="QStackedWidget" name="stackedWidget_create_activity">
             <property name="currentIndex">
-             <number>1</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="begin_create">
              <layout class="QGridLayout" name="gridLayout_5">
@@ -1770,6 +1834,9 @@ p, li { white-space: pre-wrap; }
                   <height>30</height>
                  </size>
                 </property>
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
                 <property name="text">
                  <string>完成</string>
                 </property>
@@ -1918,6 +1985,9 @@ p, li { white-space: pre-wrap; }
                   <height>30</height>
                  </size>
                 </property>
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
                 <property name="text">
                  <string>添加子活动</string>
                 </property>
@@ -2044,6 +2114,9 @@ p, li { white-space: pre-wrap; }
                   <width>300</width>
                   <height>30</height>
                  </size>
+                </property>
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
                 </property>
                 <property name="text">
                  <string>完成</string>
@@ -2188,6 +2261,11 @@ p, li { white-space: pre-wrap; }
    <class>MyListWidget</class>
    <extends>QListWidget</extends>
    <header location="global">mylistwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>MyLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">mylabel.h</header>
   </customwidget>
  </customwidgets>
  <resources>

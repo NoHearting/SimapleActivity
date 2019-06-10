@@ -17,6 +17,7 @@ MainWidget::MainWidget(QWidget *parent) :
     login_ = shared_ptr<Login>(new Login());   // 初始化登录界面
     login_->show();
     connect(login_.get(),&Login::isOk,this,[=](User user){
+        Cout<<"进入";
         initListMainContent();   //初始化主要内容界面
         user_ = user;
 
@@ -65,6 +66,14 @@ MainWidget::MainWidget(QWidget *parent) :
                 {
                     ui->radioButton_user_set_woman->setChecked(true);
                 }
+                connect(ui->label_user_set_head,&MyLabel::choosedPixmap,this,[=](const QString & pix){
+//                    ui->label_user_set_head->setText(pix);
+//                    ui->label_user_set_head->setPixmap(QPixmap(pix));
+                    Cout<<pix;
+                    QPixmap pixmap(pix);
+                    ui->label_user_set_head->setPixmap(GetImage::get_round_image(pixmap,40));
+                    changed_head_path_ = pix;
+                });
             }
         });
 
@@ -188,6 +197,8 @@ void MainWidget::initWinResource()
     ui->comboBox_choose_about_me->addItem("我管理的");
     ui->comboBox_choose_about_me->addItem("我参与的");
 
+    ui->comboBox_choose_dynamic->addItems(QStringList{"所有动态","我发布的"});
+
     void(QComboBox::*currentIndexChangedInt)(int) = &QComboBox::currentIndexChanged;
     connect(ui->comboBox_choose_about_me,currentIndexChangedInt,this,[=](int index){
        Cout<<index;
@@ -237,7 +248,7 @@ void MainWidget::initListMainContent()
 {
 
     CURRENT_TYPE = AUTO_MAIN_ACT;
-    QUrl url(g_ip_url+"/activity/getAllActivity");
+    QUrl url(ReadQStyleSheet::g_ip_url+"/activity/getAllActivity");
 
     QNetworkReply * reply = nam_->get(QNetworkRequest(url));
 
@@ -270,7 +281,7 @@ void MainWidget::initListMainContent()
 void MainWidget::initListDynamic()
 {
     CURRENT_TYPE = INIT_DYNAMIC;
-    QUrl url(g_ip_url+QString("/manager/getAllTrends?flag=0"));
+    QUrl url(ReadQStyleSheet::g_ip_url+QString("/manager/getAllTrends?flag=0"));
     nam_->get(QNetworkRequest(url));
     Cout<<"发送请求";
 
@@ -508,6 +519,9 @@ void MainWidget::dealGetHttpData(QNetworkReply *reply)
     case CREATED_DYNAMIC:    //新建动态
         dealCreatedynamicReturnInfo(reply);
         break;
+    case UPLOAD_IMAGE:
+        dealUploadImage(reply);
+        break;
     default:
         break;
     }
@@ -529,8 +543,10 @@ void MainWidget::dealCreateActReturnInfo(QNetworkReply *reply)
             Cout<<"数据解析错误";
             return;
         }
+
         if(json_document.object().value("createSuccess").toBool())
         {
+
             show_dialog_->showDialog("创建活动成功");
         }
         else
@@ -550,7 +566,7 @@ void MainWidget::dealSignUpActReturnInfo(QNetworkReply *reply)
         QString string = QString::fromUtf8(bytes);
         QJsonParseError json_error;
         QJsonDocument json_document = QJsonDocument::fromJson(bytes,&json_error);
-        if(json_error.error!=QJsonParseError::NoError)
+        if(json_error.error == QJsonParseError::NoError)
         {
             Cout<<"数据解析错误";
             return;
@@ -585,6 +601,14 @@ void MainWidget::dealCreatedynamicReturnInfo(QNetworkReply *reply)
         }
         if(json_document.object().value("publishSuccess").toBool())
         {
+            Cout<<"成功";
+            int p_id = json_document.object().value("pId").toInt();
+            for(const auto & str :dynamic_iamges_)
+            {
+
+
+                get_image_->uploadImage(QUrl(ReadQStyleSheet::g_ip_url+"/upload/uploadImage"),p_id,2,str);
+            }
             show_dialog_->showDialog("发布动态成功");
         }
         else
@@ -625,8 +649,8 @@ void MainWidget::dealGetDynamic(QNetworkReply *reply)
                             userDate.value("uSex").toBool(),
                             obj.value("userImage").toString(),
                             userDate.value("uPhone").toString(),
-                            userDate.value("uEmail").toString());
-                Cout<<u_temp.get_headpath();
+                            userDate.value("uEmail").toString()
+                            );
                 QListWidgetItem * item = new QListWidgetItem(ui->listWidget_user_dynamic);
                 UserDynamic * u_item = new UserDynamic(ui->listWidget_user_dynamic,
                                                        u_temp,   //发布此动态的用户
@@ -646,7 +670,33 @@ void MainWidget::dealGetDynamic(QNetworkReply *reply)
             Cout<<"不包含trends";
         }
     }
+    reply->deleteLater();
+}
 
+void MainWidget::dealUploadImage(QNetworkReply *reply)
+{
+    if(reply->error()==QNetworkReply::NoError)
+    {
+        QByteArray bytes = reply->readAll();
+        QString string = QString::fromUtf8(bytes);
+        QJsonParseError json_error;
+        QJsonDocument json_document = QJsonDocument::fromJson(bytes,&json_error);
+        if(json_error.error!=QJsonParseError::NoError)
+        {
+            Cout<<"数据解析错误";
+            return;
+        }
+        Cout<<bytes.data();
+        if(json_document.object().value("uploadSuccess").toBool())
+        {
+            show_dialog_->showDialog("图片上传成功");
+        }
+        else
+        {
+            show_dialog_->showDialog("图片上传失败");
+        }
+    }
+    reply->deleteLater();
 }
 
 void MainWidget::on_toolButton_create_activity_clicked()
@@ -722,7 +772,7 @@ void MainWidget::on_pushButton_finished_clicked()
     }
 
     // 保存获取到的主活动信息
-    main_activity_->reset(user_.get_id(),name,date,abstract,description,address,notice);
+    main_activity_->reset(user_.get_id(),name,date.toString("yyyy-MM-dd"),abstract,description,address,notice);
 
     if(ui->listWidget_child_activity->count()<1)  // 当第一次跳转到后面的页面的时候
     {
@@ -819,12 +869,13 @@ void MainWidget::on_pushButton_create_finish_clicked()
 
     CURRENT_TYPE = CREATE_ACT;             //设置接收消息的类型为创建活动
     // 发送服务器请求
-    QString url = g_ip_url+"/activity/createActivity";
+    QString url = ReadQStyleSheet::g_ip_url+"/activity/createActivity";
 
     QNetworkRequest request;
     request.setUrl(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
 
+    Cout<<bytes.data();
     nam_->post(request,bytes);
 
 }
@@ -845,7 +896,7 @@ void MainWidget::on_toolButton_update_clicked()
 {
     ui->listWidgetMainContent->clear();
     CURRENT_TYPE = UPDATE_MAIN_ACT;
-    QUrl url(g_ip_url+"/activity/getAllActivity");
+    QUrl url(ReadQStyleSheet::g_ip_url+"/activity/getAllActivity");
     QNetworkReply * reply = nam_->get(QNetworkRequest(url));
 }
 
@@ -860,8 +911,10 @@ void MainWidget::on_pushButton_write_dynamic_clicked()
 }
 
 //新建动态
-void MainWidget::publsh_dynamic(QString content, QStringList &list)
+void MainWidget::publsh_dynamic(QString content, QStringList & list)
 {
+    dynamic_iamges_ = list;
+    Cout<<dynamic_iamges_.size();
     CURRENT_TYPE = CREATED_DYNAMIC;
     QListWidgetItem * item = new QListWidgetItem(ui->listWidget_user_dynamic);
     UserDynamic * u_item = new UserDynamic(ui->listWidget_user_dynamic,user_,user_,content,list,1,1);
@@ -870,8 +923,13 @@ void MainWidget::publsh_dynamic(QString content, QStringList &list)
     item->setSizeHint(QSize(0,u_item->getHeight()));
 
     // 发布动态  上传数据到服务器
-    QString url = QString(g_ip_url+"/manager/publishMessage");
-    nam_->post(QNetworkRequest(QUrl(url)),QString("uId=%1&content=%2").arg(user_.get_id()).arg(content).toUtf8());
+    QString url = QString(ReadQStyleSheet::g_ip_url+"/manager/publishMessage");
+    QNetworkRequest request;
+    request.setUrl(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+
+
+    nam_->post(request,QString("uId=%1&content=%2").arg(user_.get_id()).arg(content).toUtf8());
 
 
 }
@@ -888,7 +946,22 @@ void MainWidget::on_pushButton_dynamic_update_clicked()
 {
     ui->listWidget_user_dynamic->clear();
     CURRENT_TYPE = UPDATE_DYNAMIC;
-    QUrl url(g_ip_url+QString("/manager/getAllTrends?flag=0"));
+    QUrl url(ReadQStyleSheet::g_ip_url+QString("/manager/getAllTrends?flag=0"));
     nam_->get(QNetworkRequest(url));
     Cout<<"发送请求";
+}
+
+void MainWidget::on_pushButton_user_set_save_clicked()
+{
+
+    //ui->label_test->setPixmap(t);
+    //CURRENT_TYPE  = UPLOAD_IMAGE;
+
+    bool ok = get_image_->uploadImage(QUrl(ReadQStyleSheet::g_ip_url+"/upload/uploadImage"),user_.get_id(),0,changed_head_path_);
+    if(ok)
+    {
+        show_dialog_->showDialog("上传图片成功");
+    }
+
+
 }

@@ -15,15 +15,27 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QWidget" name="widgetInner" native="true">
+    <widget class="MyWidgetRegister" name="widgetInner" native="true">
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>40</y>
-        <width>91</width>
-        <height>16</height>
+        <x>20</x>
+        <y>70</y>
+        <width>100</width>
+        <height>20</height>
        </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>20</height>
+       </size>
       </property>
       <property name="text">
        <string>子活动名称</string>
@@ -33,7 +45,7 @@
       <property name="geometry">
        <rect>
         <x>140</x>
-        <y>40</y>
+        <y>70</y>
         <width>221</width>
         <height>20</height>
        </rect>
@@ -43,7 +55,7 @@
       <property name="geometry">
        <rect>
         <x>140</x>
-        <y>90</y>
+        <y>120</y>
         <width>221</width>
         <height>61</height>
        </rect>
@@ -52,11 +64,23 @@
      <widget class="QLabel" name="label_2">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>110</y>
-        <width>81</width>
-        <height>16</height>
+        <x>20</x>
+        <y>130</y>
+        <width>100</width>
+        <height>20</height>
        </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>20</height>
+       </size>
       </property>
       <property name="text">
        <string>子活动描述</string>
@@ -65,11 +89,14 @@
      <widget class="QPushButton" name="pushButton_finished">
       <property name="geometry">
        <rect>
-        <x>130</x>
-        <y>290</y>
+        <x>120</x>
+        <y>320</y>
         <width>151</width>
         <height>23</height>
        </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
       </property>
       <property name="text">
        <string>完成</string>
@@ -78,11 +105,23 @@
      <widget class="QLabel" name="label_3">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>180</y>
-        <width>91</width>
-        <height>16</height>
+        <x>20</x>
+        <y>200</y>
+        <width>100</width>
+        <height>20</height>
        </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>20</height>
+       </size>
       </property>
       <property name="text">
        <string>一天可参加次数</string>
@@ -91,11 +130,23 @@
      <widget class="QLabel" name="label_4">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>230</y>
-        <width>54</width>
-        <height>12</height>
+        <x>20</x>
+        <y>270</y>
+        <width>100</width>
+        <height>20</height>
        </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>20</height>
+       </size>
       </property>
       <property name="text">
        <string>单次计分</string>
@@ -105,7 +156,7 @@
       <property name="geometry">
        <rect>
         <x>140</x>
-        <y>170</y>
+        <y>210</y>
         <width>221</width>
         <height>22</height>
        </rect>
@@ -115,16 +166,40 @@
       <property name="geometry">
        <rect>
         <x>140</x>
-        <y>220</y>
+        <y>270</y>
         <width>221</width>
         <height>22</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QToolButton" name="toolButton">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>0</y>
+        <width>30</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>×</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
       </property>
      </widget>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MyWidgetRegister</class>
+   <extends>QWidget</extends>
+   <header location="global">mywidgetregister.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

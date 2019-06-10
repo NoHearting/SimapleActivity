@@ -218,6 +218,9 @@
         <height>71</height>
        </rect>
       </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
       <property name="styleSheet">
        <string notr="true">text-align:left;
 padding-left:20px;</string>
@@ -254,6 +257,9 @@ padding-left:20px;</string>
         <width>291</width>
         <height>71</height>
        </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
       </property>
       <property name="layoutDirection">
        <enum>Qt::LeftToRight</enum>
@@ -300,6 +306,9 @@ padding-left:20px;</string>
         <width>291</width>
         <height>81</height>
        </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
       </property>
       <property name="styleSheet">
        <string notr="true">text-align:left;

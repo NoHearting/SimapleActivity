@@ -7,26 +7,26 @@ MyCreateActivity::MyCreateActivity(QWidget *parent) :
 {
     ui->setupUi(this);
     qDebug()<<"构建MyCreateActivity";
-//    QListWidgetItem * item = new QListWidgetItem();
-//    ChildActivityItem *c_item = new ChildActivityItem(ui->listWidget_child,"哈哈","不知道");
-//    c_item->setStyleSheet("background-color:rgb(192,250,214);");
-//    item->setSizeHint(QSize(ui->listWidget_child->width(),100));
-//    ui->listWidget_child->addItem(item);
-//    ui->listWidget_child->setItemWidget(item,c_item);
+    QListWidgetItem * item = new QListWidgetItem();
+    ChildActivityItem *c_item = new ChildActivityItem(ui->listWidget_child,"哈哈","不知道");
+    c_item->setStyleSheet("background-color:rgb(192,250,214);");
+    item->setSizeHint(QSize(ui->listWidget_child->width(),100));
+    ui->listWidget_child->addItem(item);
+    ui->listWidget_child->setItemWidget(item,c_item);
 
-//    QListWidgetItem * item2 = new QListWidgetItem();
-//    ChildActivityItem *c_item2 = new ChildActivityItem(ui->listWidget_child,"嘿嘿","不清楚");
-//    c_item2->setStyleSheet("background-color:rgb(192,250,214);");
-//    item2->setSizeHint(QSize(ui->listWidget_child->width(),100));
-//    ui->listWidget_child->addItem(item2);
-//    ui->listWidget_child->setItemWidget(item2,c_item2);
+    QListWidgetItem * item2 = new QListWidgetItem();
+    ChildActivityItem *c_item2 = new ChildActivityItem(ui->listWidget_child,"嘿嘿","不清楚");
+    c_item2->setStyleSheet("background-color:rgb(192,250,214);");
+    item2->setSizeHint(QSize(ui->listWidget_child->width(),100));
+    ui->listWidget_child->addItem(item2);
+    ui->listWidget_child->setItemWidget(item2,c_item2);
 
-//    QListWidgetItem * item3 = new QListWidgetItem();
-//    ChildActivityItem *c_item3 = new ChildActivityItem(ui->listWidget_child,"嘿嘿","不清楚");
-//    c_item3->setStyleSheet("background-color:rgb(192,250,214);");
-//    item3->setSizeHint(QSize(ui->listWidget_child->width(),100));
-//    ui->listWidget_child->addItem(item3);
-//    ui->listWidget_child->setItemWidget(item3,c_item3);
+    QListWidgetItem * item3 = new QListWidgetItem();
+    ChildActivityItem *c_item3 = new ChildActivityItem(ui->listWidget_child,"嘿嘿","不清楚");
+    c_item3->setStyleSheet("background-color:rgb(192,250,214);");
+    item3->setSizeHint(QSize(ui->listWidget_child->width(),100));
+    ui->listWidget_child->addItem(item3);
+    ui->listWidget_child->setItemWidget(item3,c_item3);
 }
 
 MyCreateActivity::MyCreateActivity(QWidget *parent, QString activity_id, QString activity_name, QString activity_abstract):
@@ -39,13 +39,27 @@ MyCreateActivity::MyCreateActivity(QWidget *parent, QString activity_id, QString
     ui->label_name->setText(activity_name_);
     ui->label_abstract->setText(activity_abstract_);
     connect(nam_.get(),&QNetworkAccessManager::finished,this,&MyCreateActivity::dealGetHttpData);
-    QString url = QString("http://192.168.1.237:8080/test/activity/getAllChildActivity?aId=%1").arg(activity_id_);
+    QString url = ReadQStyleSheet::g_ip_url+QString("/activity/getAllChildActivity?aId=%1").arg(activity_id_);
+    nam_->get(QNetworkRequest(QUrl(url)));
+}
+
+MyCreateActivity::MyCreateActivity(QWidget *parent, const MainActivity &main_act):
+    QWidget(parent),main_act_(main_act),
+    ui(new Ui::MyCreateActivity)
+{
+    ui->setupUi(this);
+    nam_.reset(new QNetworkAccessManager());
+
+    ui->label_name->setText(main_act_.get_name());
+    ui->label_abstract->setText(main_act_.get_abstract());
+    connect(nam_.get(),&QNetworkAccessManager::finished,this,&MyCreateActivity::dealGetHttpData);
+    QString url = ReadQStyleSheet::g_ip_url+QString("/activity/getAllChildActivity?aId=%1").arg(main_act_.get_a_id());
     nam_->get(QNetworkRequest(QUrl(url)));
 }
 
 void MyCreateActivity::setUpdateHidden(bool flag)
 {
-    ui->pushButton->setHidden(flag);
+    ui->pushButton_update->setHidden(flag);
 }
 
 MyCreateActivity::~MyCreateActivity()
@@ -93,4 +107,13 @@ void MyCreateActivity::dealGetHttpData(QNetworkReply *reply)
 
     }
     reply->deleteLater();
+}
+
+void MyCreateActivity::on_pushButton_update_clicked()
+{
+    if(!update_act_)
+    {
+        update_act_.reset(new UpdateActivity(0,main_act_));
+    }
+    update_act_->show();
 }

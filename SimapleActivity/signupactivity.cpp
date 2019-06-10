@@ -51,7 +51,7 @@ void SignUpActivity::set_sign_up_item()
 {
     //先获取信息
     QEventLoop e;
-    QString url = QString("http://192.168.1.237:8080/test/manager/getActivityFields?aId=%1").arg(activity_id_);
+    QString url = ReadQStyleSheet::g_ip_url+QString("/manager/getActivityFields?aId=%1").arg(activity_id_);
     Cout<<url;
     status_ = 1;
     nam_->get(QNetworkRequest(QUrl(url)));
@@ -83,7 +83,7 @@ void SignUpActivity::set_child_activity_item()
     QEventLoop e;
     //先从服务器获取信息
     Cout<<"activity_id_   "<<activity_id_;
-    QString url = QString("http://192.168.1.237:8080/test/activity/getAllChildActivity?aId=%1").arg(activity_id_);
+    QString url = ReadQStyleSheet::g_ip_url+QString("/activity/getAllChildActivity?aId=%1").arg(activity_id_);
     status_ = 2;
     nam_->get(QNetworkRequest(QUrl(url)));
     Cout<<"发射SignUpActivity::set_child_activity_item";
@@ -324,7 +324,7 @@ void SignUpActivity::on_pushButton_post_clicked()
 
     QByteArray data = TransformToJson::childActivityAndEntryFormToJson(activity_id_,u_id_,list_data,child_act_id);
 
-    QString url = "http://192.168.1.237:8080/test/manager/signUp";
+    QString url = ReadQStyleSheet::g_ip_url+"/manager/signUp";
 
     QNetworkRequest request;
     request.setUrl(url);
